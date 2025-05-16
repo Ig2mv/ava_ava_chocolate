@@ -1,0 +1,64 @@
+:root {
+    --color-bg: #202020;
+    --color-text: #fff;
+    --color-accent: #fff;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    scrollbar-width: none;
+    ::-webkit-scrollbar {
+    display: none;
+    overflow: hidden;
+    }
+}
+
+body {
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior: none;
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.5;
+    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img, video, svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+button, input, textarea, select {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+ul, ol {
+    list-style: none;
+    padding-left: 0;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}

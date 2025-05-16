@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <title>Ava Chocolate Design</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-top">
+            <div class="header-left">
+                <a href="/" class="logo">AVA CHOCOLATE</a>
+                <button type="button" class="menu-toggle" aria-label="Открыть меню">
+                    <span class="menu-icon">
+                        <span></span> <!-- Средняя полоска -->
+                    </span>
+                </button>
+            </div>
+            <a href="tel:+994709690901" class="phone">+994 70 969 09 01</a>
+        </div>
+        <div class="dropdown-container">
+            <div class="menu-line"></div>
+            <nav class="dropdown-menu" aria-label="Основное меню">
+                <ul>
+                    <li><a href="#hero">О МАСТЕРСКОЙ</a></li>
+                    <li><a href="#order">КОМПОЗИЦИИ БУКЕТОВ</a></li>
+                    <li><a href="#about">ТЕХНИКА И ИНГРИДИЕНТЫ</a></li>
+                    <li><a href="#reviews">ИСТОРИИ КЛИЕНТОВ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Тело -->
+    <main class="main">
+        <!-- Секция id="hero" -->
+        <section class="hero-section" id="hero">
+            <div class="hero-bg" style="background-image: url('src/');"></div>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Ava Chocolate</h1>
+                    <p class="hero-desc">Ручная работа из бельгийского шоколада</p>
+                </div>
+            </div>
+            <div class="hero-nav">
+                <button type="button" class="hero-arrows hero-arrow--prev" aria-label="Предыдущий">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+                <button type="button" class="hero-arrows hero-arrow--next" aria-label="Следующий">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Секция id="order" -->
+        <section class="order-section" id="order">
+            <div class="order-bg" style="background-image: url('src/')"></div>
+            <div class="order-content">
+                <h2 class="order-title">Выберите ваш букет</h2>
+                <div class="order-scroll-wrapper">
+                    <div class="price-filter">
+                        <div class="filter-options">
+                            <button type="button" class="filter-btn active" data-min="0" data-max="100">До 100 ₼</button>
+                            <button type="button" class="filter-btn" data-min="100" data-max="200">100-200 ₼</button>
+                            <button type="button" class="filter-btn" data-min="200" data-max="300">200-300 ₼</button>
+                            <button type="button" class="filter-btn" data-min="300" data-max="500">300-500 ₼</button>
+                        </div>
+                    </div>
+                    <div class="order-scroll-container">
+                        <div class="order-items-container">
+                            <!-- Товар 1 -->
+                            <div class="order-item">
+                                <div class="order-item-img" style="background-image: url('src/')"></div>
+                                <h3 class="order-item-title">Шоколадная роза</h3>
+                                <p class="order-item-desc">Бельгийский шоколад, ручная работа</p>
+                                <div class="order-item-footer">
+                                    <span class="order-item-price">85 ₼</span>
+                                    <button type="button" class="order-item-btn">Добавить</button>
+                                </div>
+                            </div>
+                            <!-- Товар 2 -->
+                            <div class="order-item" data-price="85">
+                                <div class="order-item-img" style="background-image: url('src/')"></div>
+                                <h3 class="order-item-title">Шоколадный тюльпан</h3>
+                                <p class="order-item-desc">Нежный молочный шоколад</p>
+                                <div class="order-item-footer">
+                                    <span class="order-item-price">75 ₼</span>
+                                    <button type="button" class="order-item-btn">Добавить</button>
+                                </div>
+                            </div>
+                            <!-- Товар 3 -->
+                            <div class="order-item">
+                                <div class="order-item-img" style="background-image: url('src/')"></div>
+                                <h3 class="order-item-title">Шоколадная лилия</h3>
+                                <p class="order-item-desc">Тёмный шоколад 75% какао</p>
+                                <div class="order-item-footer">
+                                    <span class="order-item-price">95 ₼</span>
+                                    <button type="button" class="order-item-btn">Добавить</button>
+                                </div>
+                            </div>
+                            <!-- Товар 4 -->
+                            <div class="order-item">
+                                <div class="order-item-img" style="background-image: url('src/')"></div>
+                                <h3 class="order-item-title">Шоколадная орхидея</h3>
+                                <p class="order-item-desc">Белый шоколад с ванилью</p>
+                                <div class="order-item-footer">
+                                    <span class="order-item-price">110 ₼</span>
+                                    <button type="button" class="order-item-btn">Добавить</button>
+                                </div>
+                            </div>
+                            <!-- Товар 5 -->
+                            <div class="order-item">
+                                <div class="order-item-img" style="background-image: url('src/')"></div>
+                                <h3 class="order-item-title">Шоколадный подсолнух</h3>
+                                <p class="order-item-desc">Молочный шоколад с фундуком</p>
+                                <div class="order-item-footer">
+                                    <span class="order-item-price">90 ₼</span>
+                                    <button type="button" class="order-item-btn">Добавить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция id="about" -->
+        <section class="about-section" id="about">
+            <div class="about-bg" style="background-image: url('src/')"></div>
+            <div class="about-content">
+                <!-- Левая часть - текст -->
+                <div class="about-text">
+                    <h2 class="section-subtitle">Шоколадное искусство</h2>
+                    <h3 class="section-title">AVA CHOCOLATE</h3>
+                    <p class="about-desc">Мы создаем шоколадные композиции, которые становятся произведениями искусства. Каждый наш букет - это ручная работа из лучшего бельгийского шоколада.</p>
+                    <div class="about-features">
+                        <div class="feature-item">
+                            <div class="feature-number">01</div>
+                            <div class="feature-content">
+                                <h4 class="feature-title">Только премиальные ингредиенты</h4>
+                                <p class="feature-desc">Используем шоколад с содержанием какао от 72% и натуральные добавки</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-number">02</div>
+                            <div class="feature-content">
+                                <h4 class="feature-title">Индивидуальный подход</h4>
+                                <p class="feature-desc">Создаем уникальные дизайны по вашим эскизам и пожеланиям</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-number">03</div>
+                            <div class="feature-content">
+                                <h4 class="feature-title">Собственное производство</h4>
+                                <p class="feature-desc">Все изделия делаем вручную в нашей мастерской в Баку</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Правая часть - галерея -->
+                <div class="about-gallery">
+                    <div class="gallery-main">
+                        <div class="main-image active" style="background-image: url('src/')">
+                            <div class="image-caption">Подарок на юбилей</div>
+                        </div>
+                        <div class="main-image" style="background-image: url('src/')">
+                            <div class="image-caption">Свадебная композиция</div>
+                        </div>  
+                        <div class="main-image" style="background-image: url('src/')">
+                            <div class="image-caption">Корпоративный подарок</div>
+                        </div>
+                    </div>
+                    <div class="gallery-thumbs">
+                        <div class="thumb-item active" data-index="0">
+                            <div class="thumb-image" style="background-image: url('src/')"></div>
+                        </div>
+                        <div class="thumb-item" data-index="1">
+                            <div class="thumb-image" style="background-image: url('src/')"></div>
+                        </div>
+                        <div class="thumb-item" data-index="2">
+                            <div class="thumb-image" style="background-image: url('src/')"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция id="reviews" -->
+        <section class="reviews-section" id="reviews">
+            <div class="reviews-bg" style="background-image: url('src/')"></div>
+            <div class="reviews-content">
+                <h2 class="reviews-title">Оставьте свое впечатление</h2>
+                <div class="reviews-scroll-wrapper">
+                    <!-- Лента доверия -->
+                    <div class="trust-band">
+                        <div class="trust-progress" style="width: 0%">
+                            <div class="trust-shine"></div>
+                        </div>
+                        <div class="trust-text">Уже <span class="trust-count">0</span> довольных клиентов</div>
+                    </div>
+                    <div class="reviews-scroll-container">
+                        <div class="reviews-items-container">
+                            <!-- Пустая карточка для добавления отзыва -->
+                            <div class="reviews-item add-review">
+                                <div class="add-review-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <h3 class="reviews-item-title">Добавить отзыв</h3>
+                                <p class="reviews-item-desc">Поделитесь своим впечатлением</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Подвал отсутствует - вопрос дизайна и UX -->
+
+    <!-- Подключение аудиофайла -->
+    <audio id="background-audio" loop autoplay>
+            <source src="src/audio/background.mp3" type="audio/mpeg">
+            Ваш браузер не поддерживает аудио.
+    </audio>
+    <!-- Кнопка включения/выключения -->
+    <button type="button" class="audio-toggle" aria-label="Включить звук" data-audio-state="muted">
+        <img src="./src/img/svg/muted-audio.svg" class="audio-icon" alt="Звук выключен">
+    </button>
+
+    <!-- Подключаем GSAP для плавности -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollToPlugin.min.js"></script>
+
+
+    <!-- Основной скрипт -->
+    <script src="src/js/main.js"></script>
+</body>
+</html>
