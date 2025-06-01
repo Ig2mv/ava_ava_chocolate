@@ -1,64 +1,88 @@
+/* Устанавливаем фиксированные цвета */
 :root {
-    --color-bg: #202020;
+    --color-bg: #000;
     --color-text: #fff;
     --color-accent: #fff;
 }
 
+/* Универсальный сброс стилей для всех элементов и их псевдоэлементов */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html {
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    scrollbar-width: none;
-    ::-webkit-scrollbar {
-    display: none;
-    overflow: hidden;
+    -webkit-text-size-adjust: 100%;  // Отключает автоматическое изменение размера шрифта на мобильных устройствах,
+    -ms-text-size-adjust: 100%;      // которое может нарушить дизайн. Очень важно для консистентности на разных устройствах.
+    scrollbar-width: none;           // Скрывает стандартный скроллбар в браузере Firefox.
+    ::-webkit-scrollbar {            // Скрывает стандартный скроллбар в WebKit-браузерах (Chrome, Safari, Edge).
+    display: none;                   // Символ '&' здесь нужен, потому что мы внутри блока 'html', и это SCSS.
     }
 }
 
 body {
-    overflow-x: hidden;
-    text-rendering: optimizeLegibility;
-    overscroll-behavior: none;
-    background: var(--color-bg);
-    color: var(--color-text);
-    line-height: 1.5;
-    min-height: 100vh;
-    min-height: 100dvh;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;                     // Предотвращает появление горизонтальной полосы прокрутки. Если контент вдруг выйдет за пределы экрана по ширине, он будет обрезан.
+    text-rendering: optimizeLegibility;     // Указывает браузеру оптимизировать рендеринг текста для лучшей читаемости.
+    overscroll-behavior: none;              // Отключает "резиновый" эффект прокрутки на мобильных устройствах.
+    background: var(--color-bg);            // Применяем переменные цветов, которые мы определили в `:root`.
+    color: var(--color-text);               // Это задает базовый фон и цвет текста для всего сайта.
+    line-height: 1.5;                       // Устанавливает базовый интерлиньяж (высоту строки) для всего текста.
+    min-height: 100vh;                      // Это стандартная высота viewport.
+    min-height: 100dvh;                     // Это более современная единица.
+    -webkit-font-smoothing: antialiased;    // Эти свойства улучшают сглаживание шрифтов. Делает шрифты более тонкими и четкими.
+    -moz-osx-font-smoothing: grayscale;     // Эти свойства улучшают сглаживание шрифтов. Делает текст черно-белым, избегая субпиксельного рендеринга, что может улучшить четкость.
+    user-select: none;                      // Запрещает выделение текста на всём сайте — чтобы убрать "I-курсор" и случайное копирование.
+    cursor: default;                        // Устанавливает стрелку-курсор везде, даже над текстом.
+    overflow-wrap: break-word;               // Предотвращаем горизонтальный скролл при длинных словах.
+    // Устанавливаем основной фон
+    background: linear-gradient(
+        135deg,
+        #c9a18f,
+        #c09584,
+        #b58375,
+        #a17267,
+        #8a5d54,
+        #734a42
+    );
+    background-size: 400% 400%;
+    animation: gradientFlow 25s ease infinite;
+    @keyframes gradientFlow {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
 }
 
 img, video, svg {
-    max-width: 100%;
-    height: auto;
-    display: block;
+    max-width: 100%;  // Без него, если изображение шире экрана, оно вызовет горизонтальный скролл.
+    height: auto;     // Сохраняет пропорции медиа-элемента при изменении его ширины.
+    display: block;   // Убирает этот отступ, обеспечивая предсказуемое расположение.
 }
 
 button, input, textarea, select {
-    font: inherit;
-    color: inherit;
-    background: none;
-    border: none;
+    font: inherit;                  // Указывает, что элементы форм должны наследовать свойства шрифта
+    color: inherit;                 // Наследует цвет текста от родительского элемента.
+    background: none;               // Сброс этих стилей дает тебе полный контроль над внешним видом элементов форм,
+    border: none;                   // позволяя легко стилизовать их с нуля.
 }
 
 a {
-    color: var(--color-accent);
-    text-decoration: none;
-    -webkit-tap-highlight-color: transparent;
+    color: var(--color-accent);                // Задает цвет ссылок, используя акцентную переменную, определенную в !root.
+    text-decoration: none;                     // Убирает стандартное подчеркивание у ссылок.
+    -webkit-tap-highlight-color: transparent;  // Отключает серый или синий фон (highlight), который появляется при касании ссылки на мобильных устройствах с WebKit-браузерами (Chrome, Safari).
 }
 
 ul, ol {
-    list-style: none;
-    padding-left: 0;
+    list-style: none;   // Удаляет маркеры (точки, квадраты) у неупорядоченных списков (ul) и нумерацию (1., 2., 3.) у упорядоченных списков (ol).
 }
 
+// Скрывает текст или элементы от обычных пользователей, которые видят сайт. Сохраняет этот текст или элементы доступными для скринридеров, которыми пользуются люди с нарушениями зрения.
 .visually-hidden {
     position: absolute;
     width: 1px;
     height: 1px;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+}
+
+// Убираем черную обводку
+*:focus {
+    outline: none;
 }
