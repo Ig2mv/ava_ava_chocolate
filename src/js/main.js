@@ -18,25 +18,25 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
       preloader.remove();
     }, 1500);
-  }, 2000);
+  }, 1000);
 });
 
 //! QrCode
-document.addEventListener("DOMContentLoaded", () => {
-    // Находим обёртку вокруг QR-кода
-    const qrWrapper = document.getElementById("qrWrapper");
+// document.addEventListener("DOMContentLoaded", () => {
+//     // Находим обёртку вокруг QR-кода
+//     const qrWrapper = document.getElementById("qrWrapper");
 
-    // При клике по самому QR — увеличиваем или возвращаем обратно
-    qrWrapper.addEventListener("click", (e) => {
-        e.stopPropagation();
-        qrWrapper.classList.toggle("active");
-    });
+//     // При клике по самому QR — увеличиваем или возвращаем обратно
+//     qrWrapper.addEventListener("click", (e) => {
+//         e.stopPropagation();
+//         qrWrapper.classList.toggle("active");
+//     });
 
-    // При клике вне QR — автоматически скрываем (убираем .active)
-    document.addEventListener("click", () => {
-        qrWrapper.classList.remove("active");
-    });
-});
+//     // При клике вне QR — автоматически скрываем (убираем .active)
+//     document.addEventListener("click", () => {
+//         qrWrapper.classList.remove("active");
+//     });
+// });
 
 //! MenuToggle
 document.addEventListener('DOMContentLoaded', () => {
