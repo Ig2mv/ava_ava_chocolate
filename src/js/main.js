@@ -21,6 +21,45 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 1000);
 });
 
+//! ButtonClick
+document.addEventListener("DOMContentLoaded", () => {
+    // Ищем тег <audio> по ID
+    const clickSound = document.getElementById("button-click");
+    if (!clickSound) return;
+
+    // 🔓 Разрешаем браузеру заранее "разблокировать" звук
+    const unlockAudio = () => {
+        clickSound.play().then(() => {
+            clickSound.pause();
+            clickSound.currentTime = 0;
+        }).catch(() => {
+            // Ошибку игнорируем — может быть Safari/iOS
+        });
+
+        // Удаляем слушатели, чтобы не вызывались повторно
+        document.removeEventListener("touchstart", unlockAudio);
+        document.removeEventListener("click", unlockAudio);
+    };
+
+    // Первый тап или клик разблокирует звук
+    document.addEventListener("touchstart", unlockAudio);
+    document.addEventListener("click", unlockAudio);
+
+    // Находим все кнопки на странице
+    const buttons = document.querySelectorAll("button");
+
+    // Назначаем каждому <button> обработчик клика со звуком
+    buttons.forEach(button => {
+        button.addEventListener("click", () => {
+            clickSound.currentTime = 0;
+            clickSound.play().catch(() => {
+                // Ошибки проглатываем — не мешают работе
+            });
+        });
+    });
+});
+
+
 //! QrCode
 // document.addEventListener("DOMContentLoaded", () => {
 //     // Находим обёртку вокруг QR-кода
