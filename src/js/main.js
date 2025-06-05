@@ -59,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
 //! QrCode
 // document.addEventListener("DOMContentLoaded", () => {
 //     // Находим обёртку вокруг QR-кода
@@ -210,37 +209,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const phoneStatus = phoneWrapper.querySelector('.phone-status');
 
   const messageInput = form.querySelector('.review-message');
-
-  messageInput.addEventListener('input', () => {
-      const maxChars = 500;
-
-      if (messageInput.value.length > maxChars) {
-        // Обрезаем лишний символ
-        messageInput.value = messageInput.value.slice(0, maxChars);
-
-        // Добавляем анимационный класс
-        messageInput.classList.add('overlimit');
-
-        // Удаляем его через 300мс (для повторного срабатывания)
-        clearTimeout(messageInput._limitTimeout);
-        messageInput._limitTimeout = setTimeout(() => {
-            messageInput.classList.remove('overlimit');
-        }, 300);
-      }
-  });
-
   const photoInput = form.querySelector('.review-photo');
+  const photoLabel = form.querySelector('.photo-label'); // 🔽 Новый элемент
 
   const submitBtn = form.querySelector('.submit-review-btn');
   const errorBox = form.querySelector('.submit-error-message');
   const successBox = form.querySelector('.success-message');
 
+  // === Ограничение текста отзыва ===
+  messageInput.addEventListener('input', () => {
+    const maxChars = 500;
+
+    if (messageInput.value.length > maxChars) {
+      messageInput.value = messageInput.value.slice(0, maxChars);
+      messageInput.classList.add('overlimit');
+
+      clearTimeout(messageInput._limitTimeout);
+      messageInput._limitTimeout = setTimeout(() => {
+        messageInput.classList.remove('overlimit');
+      }, 300);
+    }
+  });
+
   // === Обработка загрузки файла ===
   photoInput.addEventListener('change', () => {
     if (photoInput.files.length > 0) {
+      const fileName = photoInput.files[0].name;
+
+      // 🔽 Укорачиваем имя, если слишком длинное
+      const maxLength = 24;
+      let displayName = fileName;
+      if (fileName.length > maxLength) {
+        const ext = fileName.split('.').pop();
+        displayName = fileName.slice(0, maxLength - ext.length - 4) + '...' + ext;
+      }
+
       photoInput.classList.add('uploaded');
+      photoLabel.textContent = `📸 ${displayName}`;
+      form.querySelector('.photo-wrapper')?.classList.add('uploaded');
     } else {
       photoInput.classList.remove('uploaded');
+      photoLabel.textContent = '📸 Добавить фото';
+      form.querySelector('.photo-wrapper')?.classList.remove('uploaded');
     }
   });
 
@@ -250,13 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
     errorBox.classList.add('visible');
     submitBtn.classList.add('hidden');
 
-    // Скроллим и ставим фокус к нужному полю, если передано
     if (focusElement) {
       focusElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       focusElement.focus();
     }
 
-    // Автоочистка сообщения
     clearTimeout(errorBox._timeout);
     errorBox._timeout = setTimeout(() => {
       errorBox.classList.remove('visible');
@@ -270,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
     successBox.classList.add('visible');
     submitBtn.classList.add('hidden');
 
-    // Автоочистка
     clearTimeout(successBox._timeout);
     successBox._timeout = setTimeout(() => {
       successBox.classList.remove('visible');
@@ -278,21 +285,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
-  // === Валидация имени при вводе ===
+  // === Валидация имени ===
   nameInput.addEventListener('input', () => {
     let value = nameInput.value;
-
-    // Оставляем только буквы и пробелы
     value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\s]/g, '');
     const parts = value.trimStart().split(' ');
-    value = parts.slice(0, 2).join(' '); // Имя + фамилия
+    value = parts.slice(0, 2).join(' ');
 
     if (value.length > 15) value = value.slice(0, 15);
     nameInput.value = value;
 
     const spaceCount = (value.match(/\s/g) || []).length;
 
-    // Проверка валидности
     if (value.length >= 3 && value.length <= 15 && spaceCount <= 1) {
       nameStatus.textContent = '✔';
       nameStatus.classList.add('valid');
@@ -304,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // === Валидация номера телефона ===
+  // === Валидация телефона ===
   phoneInput.addEventListener('focus', () => {
     if (!phoneInput.value.startsWith('+994')) {
       phoneInput.value = '+994';
@@ -313,10 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   phoneInput.addEventListener('input', () => {
     let digits = phoneInput.value.replace(/\D/g, '');
-
     if (!digits.startsWith('994')) digits = '994';
     digits = digits.slice(0, 12);
-
     phoneInput.value = '+' + digits;
 
     if (digits.length === 12) {
@@ -330,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // === Обработка отправки ===
+  // === Отправка отзыва ===
   submitBtn.addEventListener('click', () => {
     const name = nameInput.value.trim();
     const phone = phoneInput.value.trim();
@@ -339,29 +341,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const digits = phone.replace(/\D/g, '');
     const spaceCount = (name.match(/\s/g) || []).length;
 
-    // === Валидация каждого поля ===
-
     if (!name.replace(/\s/g, '')) {
       showFormError('Введите имя', nameInput);
       return;
     }
-
     if (name.length < 3 || name.length > 15 || spaceCount > 1) {
       showFormError('Введите имя корректно', nameInput);
       return;
     }
-
     if (digits.length !== 12 || !digits.startsWith('994')) {
       showFormError('Введите номер', phoneInput);
       return;
     }
-
     if (!message) {
       showFormError('Оставьте ваш отзыв', messageInput);
       return;
     }
 
-    // === Создание и вставка отзыва ===
     const newReview = document.createElement('div');
     newReview.classList.add('reviews-item');
 
@@ -385,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.disabled = false;
     }
 
-    // === Функция вставки нового блока отзыва ===
     function insertReviewHTML(photoURL) {
       const now = new Date().toLocaleDateString('ru-RU', {
         day: '2-digit',
@@ -405,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       form.after(newReview);
 
-      // Сброс полей и статусов
+      // Сброс всех значений
       nameInput.value = '';
       phoneInput.value = '';
       messageInput.value = '';
@@ -414,22 +409,18 @@ document.addEventListener('DOMContentLoaded', () => {
       phoneStatus.textContent = '';
       nameStatus.classList.remove('valid', 'error');
       phoneStatus.classList.remove('valid', 'error');
+      photoLabel.textContent = '📸 Добавить фото';
+      form.querySelector('.photo-wrapper')?.classList.remove('uploaded');
 
-      // Обновляем ленту доверия
       if (typeof incrementTrustCount === 'function') {
         incrementTrustCount();
       }
 
-      // Успешное завершение
       showSuccessMessage('Отзыв отправлен 🎉');
-
-      // Сброс визуального состояния загрузки фото
-      setTimeout(() => {
-        photoInput.classList.remove('uploaded');
-      }, 2500);
     }
   });
 });
+
 
 //! CartLogic
 // Загружаем корзину из localStorage 
