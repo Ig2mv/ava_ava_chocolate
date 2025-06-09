@@ -1,3 +1,9 @@
+//*Прячем контент, пока шрифты не загрузились
+body.fonts-loading {
+    visibility: hidden;
+}
+
+//? Шрифт S
 @font-face {
     font-family: 'NeueHelvetica';
     src:url('../fnt/HelveticaNeueCyr-Ultra.woff2') format('woff2');
@@ -6,6 +12,7 @@
     font-display: swap;
 }
 
+//? Шрифт M
 @font-face {
     font-family: 'NeueHelvetica';
     src: url('../fnt/HelveticaNeueCyr-Thin.woff2') format('woff2');
@@ -14,6 +21,7 @@
     font-display: swap;
 }
 
+//? Шрифт L
 @font-face {
     font-family: 'NeueHelvetica';
     src: url('../fnt/HelveticaNeueCyr-Light.woff2') format('woff2');

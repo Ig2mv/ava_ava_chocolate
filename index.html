@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="src/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
+
+<body class="fonts-loading">
     <!-- Preloader -->
     <div id="preloader">
         <div class="preloader-tittle">AVA CHOCOLATE DESIGN</div>
@@ -42,7 +43,7 @@
     <!-- Main -->
     <main class="main">
         <!-- HeroSection -->
-        <section class="section hero-section" id="hero" data-title="Главная">
+        <section class="hero-section" id="hero" data-title="Главная">
             <div class="hero-content">
                 <div class="hero-text">
                     <h1 class="hero-title">Цветы из бельгийского шоколада</h1>
@@ -51,7 +52,7 @@
             </div>
         </section>
         <!-- OrderSection -->
-        <section class="section order-section" id="order" data-title="Композиции">
+        <section class="order-section" id="order" data-title="Композиции">
             <div class="order-content">
                 <h2 class="order-title">Выберите ваш букет</h2>
                 <div class="order-scroll-wrapper">
@@ -191,7 +192,7 @@
             </div>
         </section>
         <!-- AboutSection -->
-        <section class="section about-section" id="about" data-title="История">
+        <section class="about-section" id="about" data-title="История">
             <div class="about-content">
                 <!-- Левая часть - текст -->
                 <div class="about-text">
@@ -250,7 +251,7 @@
             </div>
         </section>
         <!-- ReviewsSection -->
-        <section class="section reviews-section" id="reviews" data-title="Отзывы">
+        <section class="reviews-section" id="reviews" data-title="Отзывы">
             <div class="reviews-content">
                 <h2 class="reviews-title">Оставьте впечатление</h2>
                 <div class="reviews-scroll-wrapper">
@@ -274,8 +275,9 @@
                                 </div>
                                 <textarea class="review-message" placeholder="Ваш отзыв +"></textarea>
                                 <div class="photo-wrapper">
-                                    <input type="file" class="review-photo" accept="image/*">
-                                    <div class="photo-label">Добавить фото</div>                                </div>
+                                    <input type="file" class="review-photo" id="reviewPhotoInput" accept="image/*" hidden>
+                                    <label class="photo-label" for="reviewPhotoInput">Добавить фото</label>
+                                </div>
                                 <div class="submit-controls">
                                     <button class="submit-review-btn">Отправить отзыв</button>
                                     <div class="submit-error-message"></div>
@@ -290,15 +292,11 @@
                 </div>
             </div>
         </section>
-        <!-- SectionNavigation -->
-        <nav class="section-navigation">
-            <ul class="nav-dots">
-                </ul>
-        </nav>
         <!-- CartModal -->
         <div class="cart-modal">
             <div class="cart-modal-content">
-                <h2 class="cart-modal-title">Ваш оформленный заказ</h2>
+                <h2 class="cart-modal-title">Оформление заказа</h2>
+                <div class="cart-menu-line"></div>
                 <div class="cart-items-list"></div>
                 <div class="cart-modal-footer">
                     <div class="cart-total">Итого: 0 ₼</div>
@@ -309,33 +307,30 @@
             </div>
         </div>
         </div>
-</main>
+    </main>
 
-    <!-- Footer -->
-    <footer hidden></footer>
-
-    <!-- TouchpadIcon -->
-    <button type="button" class="touchpad-toggle" aria-label="Свайпать">
-        <img src="./src/img/svg/mouse.svg" class="touchpad-icon" alt="Иконка для скроллинга">
-    </button>
-
-    <!-- CartIcon -->
-    <div class="cart-toggle" data-cart-count="0">
-        <img src="./src/img/svg/cart.svg" alt="Корзина" class="cart-icon">
-        <span class="cart-count">0</span>
-    </div>
-
-    <!-- AudioIcon -->
+    <!-- AudioToggle -->
     <audio id="background-audio" loop>
             <source src="src/audio/background.mp3" type="audio/mpeg">
             Ваш браузер не поддерживает аудио.
     </audio>
     <!-- On/ Off -->
-    <button type="button" class="audio-toggle" aria-label="Включить звук" data-audio-state="muted">
-        <img src="./src/img/svg/muted.svg" class="audio-icon" alt="Иконка включения/выключения звука">
+    <button type="button" class="div-toggle audio-toggle" aria-label="Включить звук" data-audio-state="muted">
+        <img src="./src/img/svg/muted.svg" class="div-icons audio-icon" alt="Иконка включения/выключения звука">
     </button>
 
-    <!-- ButtonClick -->
+    <!-- CartToggle -->
+    <button type="button" class="div-toggle cart-toggle" data-cart-count="0" aria-label="Открыть корзину">
+        <img src="./src/img/svg/cart.svg" alt="Корзина" class="div-icons cart-icon" aria-hidden="true">
+        <span class="cart-count">0</span>
+    </button>
+
+    <!-- TouchpadToggle -->
+    <div class="div-toggle touchpad-toggle" aria-label="Свайпать" role="img">
+        <img src="./src/img/svg/mouse.svg" class="div-icons touchpad-icon" alt="Иконка для скроллинга">
+    </div>
+
+    <!-- AudioClick -->
     <audio id="button-click" preload="auto">
         <source src="src/audio/button.mp3" type="audio/mpeg">
     </audio>

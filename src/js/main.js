@@ -1,19 +1,21 @@
 //? StrictRegime
 'use strict';
 
+//*FontsLoading
+document.fonts.ready.then(() => {
+    document.body.classList.remove('fonts-loading');
+});
 
 //* Preloader
 document.addEventListener('DOMContentLoaded', function() {
+  // Элементы
   const preloader = document.getElementById('preloader');
-  
   // Минимальное время показа прелоадера (5 секунд)
   setTimeout(function() {
     // Добавляем класс к body, чтобы показать контент
     document.body.classList.add('loaded');
-    
     // Анимация исчезновения прелоадера
     preloader.style.animation = 'fadeOut 1.5s ease forwards';
-    
     // Удаляем прелоадер после анимации
     setTimeout(function() {
       preloader.remove();
@@ -21,45 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 1000);
 });
 
-//! ButtonClick
-document.addEventListener("DOMContentLoaded", () => {
-    // Ищем тег <audio> по ID
-    const clickSound = document.getElementById("button-click");
-    if (!clickSound) return;
 
-    // 🔓 Разрешаем браузеру заранее "разблокировать" звук
-    const unlockAudio = () => {
-        clickSound.play().then(() => {
-            clickSound.pause();
-            clickSound.currentTime = 0;
-        }).catch(() => {
-            // Ошибку игнорируем — может быть Safari/iOS
-        });
-
-        // Удаляем слушатели, чтобы не вызывались повторно
-        document.removeEventListener("touchstart", unlockAudio);
-        document.removeEventListener("click", unlockAudio);
-    };
-
-    // Первый тап или клик разблокирует звук
-    document.addEventListener("touchstart", unlockAudio);
-    document.addEventListener("click", unlockAudio);
-
-    // Находим все кнопки на странице
-    const buttons = document.querySelectorAll("button");
-
-    // Назначаем каждому <button> обработчик клика со звуком
-    buttons.forEach(button => {
-        button.addEventListener("click", () => {
-            clickSound.currentTime = 0;
-            clickSound.play().catch(() => {
-                // Ошибки проглатываем — не мешают работе
-            });
-        });
-    });
-});
-
-//! QrCode
+// //! QrCode
 // document.addEventListener("DOMContentLoaded", () => {
 //     // Находим обёртку вокруг QR-кода
 //     const qrWrapper = document.getElementById("qrWrapper");
@@ -81,21 +46,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Элементы
   const header = document.querySelector('.header');
   const menuToggle = document.querySelector('.menu-toggle');
-  const menuLinks = document.querySelectorAll('.dropdown-menu a'); // ШАГ 3
-
-  // Открытие/закрытие меню
+  const menuLinks = document.querySelectorAll('.dropdown-menu a');
+  // Навешиваем обработчик на клик по бургеру
   menuToggle.addEventListener('click', () => {
+    // Проверяем, открывается ли меню в данный момент
     const isOpening = !header.classList.contains('mobile-open');
+    // Меняем наличие класса mobile-open
     header.classList.toggle('mobile-open');
-    
+    // Когда меню открыто, нужно запретить прокрутку фона
+    // При закрытии меню — возвращаем overflow, снимаем блокировку
     if (isOpening) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
   });
-
-  // Закрытие при клике по ссылке
+  // Если пользователь нажал на любой пункт меню — меню автоматически закрывается и фон снова прокручивается
   menuLinks.forEach(link => {
     link.addEventListener('click', () => {
       header.classList.remove('mobile-open');
@@ -113,37 +79,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Управление музыкой
   audioToggle.addEventListener('click', () => {
+    //Если data-audio-state="muted", значит звук выключен, и мы его включим
     const isMuted = audioToggle.dataset.audioState === 'muted';
-
+    // ✅ Блок «включения звука»
     if (isMuted) {
-      audio.play();
-      audioToggle.dataset.audioState = 'playing';
-      audioIcon.src = './src/img/svg/playing.svg';
+      audio.play(); // Воспроизводим фоновую музыку
+      audioToggle.dataset.audioState = 'playing'; // Обновляем атрибут
+      audioIcon.src = './src/img/svg/playing.svg'; // Меняем иконку
+      // ⛔ Блок «отключения звука»:
     } else {
-      audio.pause();
-      audioToggle.dataset.audioState = 'muted';
-      audioIcon.src = './src/img/svg/muted.svg';
+      audio.pause(); // Останавливаем музыку
+      audioToggle.dataset.audioState = 'muted'; // Обновляем атрибут
+      audioIcon.src = './src/img/svg/muted.svg'; // Меняем иконку
     }
   });
 });
 
-//! DataPrice
+//! DataFiltrPrice
 document.addEventListener('DOMContentLoaded', () => {
   // Элементы
   const filterButtons = document.querySelectorAll('.filter-btn');
   const orderItems = document.querySelectorAll('.order-item');
-
-  // Фильтрация по цене
+  // Навешиваем клик на каждую кнопку
   filterButtons.forEach(button => {
     button.addEventListener('click', () => {
-
-      // Удаляем active со всех
+      // Снимаем active со всех кнопок, затем добавляем
       filterButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
-
+      // Из текущей кнопки достаём минимальную и максимальную цену фильтра
       const min = parseInt(button.dataset.min);
       const max = parseInt(button.dataset.max);
-
+      // Для каждой карточки читаем её data-price, и сравниваем с выбранным диапазоном
       orderItems.forEach(item => {
         const price = parseInt(item.dataset.price);
         if (price >= min && price <= max) {
@@ -161,15 +127,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Элементы
   const thumbs = document.querySelectorAll('.thumb-item');
   const mainImages = document.querySelectorAll('.main-image');
-
   // Переключение галереи
   thumbs.forEach((thumb, index) => {
     thumb.addEventListener('click', () => {
       // Сброс активных классов
       thumbs.forEach(t => t.classList.remove('active'));
       mainImages.forEach(img => img.classList.remove('active'));
-
-      // Назначаем активные
+      // Назначаем активные элементы
       thumb.classList.add('active');
       mainImages[index].classList.add('active');
     });
@@ -178,155 +142,146 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //! TrustBand
 document.addEventListener('DOMContentLoaded', () => {
+  // Получаем элементы
   const trustCount = document.querySelector('.trust-count');
   const trustProgress = document.querySelector('.trust-progress');
-
   // Функция: при добавлении нового отзыва
   function incrementTrustCount() {
+    // Получаем текущее число, увеличиваем на 1, обновляем текст в DOM
     const current = parseInt(trustCount.textContent);
     const next = current + 1;
     trustCount.textContent = next;
-
+    // Считаем процент для прогресс-бара
     const percent = Math.min((next / 100) * 100, 100);
     trustProgress.style.width = `${percent}%`;
   }
-
   // Доступ к функции глобально
   window.incrementTrustCount = incrementTrustCount;
 });
 
 //! ReviewsAdd
 document.addEventListener('DOMContentLoaded', () => {
-  // === Элементы формы ===
+  // Получаем элементы
   const form = document.querySelector('.review-form');
-
   const nameWrapper = form.querySelector('.name-wrapper');
   const nameInput = nameWrapper.querySelector('.review-name');
   const nameStatus = nameWrapper.querySelector('.name-status');
-
   const phoneWrapper = form.querySelector('.phone-wrapper');
   const phoneInput = phoneWrapper.querySelector('.review-phone');
   const phoneStatus = phoneWrapper.querySelector('.phone-status');
-
   const messageInput = form.querySelector('.review-message');
   const photoInput = form.querySelector('.review-photo');
-  const photoLabel = form.querySelector('.photo-label'); // 🔽 Новый элемент
-
+  const photoLabel = form.querySelector('.photo-label');
   const submitBtn = form.querySelector('.submit-review-btn');
   const errorBox = form.querySelector('.submit-error-message');
   const successBox = form.querySelector('.success-message');
-
-  // === Ограничение текста отзыва ===
+  // Ограничение длины текста отзыва
   messageInput.addEventListener('input', () => {
     const maxChars = 500;
-
+    // Если введено больше — обрезаем лишнее и визуально подсвечиваем
     if (messageInput.value.length > maxChars) {
       messageInput.value = messageInput.value.slice(0, maxChars);
-      messageInput.classList.add('overlimit');
-
+      messageInput.classList.add('overlimit'); // Добавляем класс
+      // Сброс предыдущего таймера
       clearTimeout(messageInput._limitTimeout);
       messageInput._limitTimeout = setTimeout(() => {
-        messageInput.classList.remove('overlimit');
+        messageInput.classList.remove('overlimit'); // Удаляем класс через 300 мс
       }, 300);
     }
   });
-
-  // === Обработка загрузки файла ===
+  // Обработка загрузки фото
   photoInput.addEventListener('change', () => {
+    // Реагируем на выбор изображения пользователем
     if (photoInput.files.length > 0) {
-      const fileName = photoInput.files[0].name;
-
-      // 🔽 Укорачиваем имя, если слишком длинное
+      const fileName = photoInput.files[0].name; // Получаем имя выбранного файла
+      // Максимальная длина, которую мы хотим отобразить
       const maxLength = 24;
       let displayName = fileName;
+      // Если имя слишком длинное — сокращаем и добавляем
       if (fileName.length > maxLength) {
-        const ext = fileName.split('.').pop();
+        const ext = fileName.split('.').pop(); // Получаем расширение файла
         displayName = fileName.slice(0, maxLength - ext.length - 4) + '...' + ext;
       }
-
-      photoInput.classList.add('uploaded');
-      photoLabel.textContent = `📸 ${displayName}`;
+      // Визуально помечаем, что файл добавлен
+      photoInput.classList.add('uploaded'); // Показываем имя файла
+      photoLabel.textContent = `📸 ${displayName}`; // Добавляем класс на обёртку
       form.querySelector('.photo-wrapper')?.classList.add('uploaded');
     } else {
+      // Если файл снят — очищаем всё
       photoInput.classList.remove('uploaded');
-      photoLabel.textContent = '📸 Добавить фото';
+      photoLabel.textContent = 'Добавить фото';
       form.querySelector('.photo-wrapper')?.classList.remove('uploaded');
     }
   });
-
-  // === Функция показа ошибки + прокрутка к полю ===
+  // Функция показа ошибки
   function showFormError(message, focusElement = null) {
     errorBox.textContent = message;
     errorBox.classList.add('visible');
     submitBtn.classList.add('hidden');
-
+    // Прокрутка к полю с ошибкой и установка фокуса
     if (focusElement) {
       focusElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       focusElement.focus();
     }
-
+    // Таймер скрытия ошибки через 3 секунды
     clearTimeout(errorBox._timeout);
     errorBox._timeout = setTimeout(() => {
       errorBox.classList.remove('visible');
       submitBtn.classList.remove('hidden');
     }, 3000);
   }
-
-  // === Функция показа успешного отправления ===
+  // === Функция показа успешного сообщения ===
   function showSuccessMessage(message) {
     successBox.textContent = message;
     successBox.classList.add('visible');
     submitBtn.classList.add('hidden');
-
+    // Скрываем через 3 секунды
     clearTimeout(successBox._timeout);
     successBox._timeout = setTimeout(() => {
       successBox.classList.remove('visible');
       submitBtn.classList.remove('hidden');
     }, 3000);
   }
-
   // === Валидация имени ===
   nameInput.addEventListener('input', () => {
     let value = nameInput.value;
-    value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\s]/g, '');
-    const parts = value.trimStart().split(' ');
-    value = parts.slice(0, 2).join(' ');
-
+    value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\s]/g, ''); // Удаляем все символы, кроме букв и пробелов
+    const parts = value.trimStart().split(' '); // Удаляем пробелы в начале, разбиваем по пробелам
+    value = parts.slice(0, 2).join(' '); // Оставляем только первые два слова
+    // Обрезаем по длине
     if (value.length > 15) value = value.slice(0, 15);
     nameInput.value = value;
-
     const spaceCount = (value.match(/\s/g) || []).length;
-
+    // Условия корректности имени: 3–15 символов, не более одного пробела
     if (value.length >= 3 && value.length <= 15 && spaceCount <= 1) {
-      nameStatus.textContent = '✔';
+      nameStatus.textContent = '+'; // Успешно
       nameStatus.classList.add('valid');
       nameStatus.classList.remove('error');
     } else {
-      nameStatus.textContent = '✖';
+      nameStatus.textContent = '-'; // Ошибка
       nameStatus.classList.add('error');
       nameStatus.classList.remove('valid');
     }
   });
-
   // === Валидация телефона ===
   phoneInput.addEventListener('focus', () => {
     if (!phoneInput.value.startsWith('+994')) {
-      phoneInput.value = '+994';
+      phoneInput.value = '+994'; // Автозаполнение при фокусе
     }
   });
-
+  // Оставляем только цифры, начало с +994, обрезаем до 12 цифр
   phoneInput.addEventListener('input', () => {
     let digits = phoneInput.value.replace(/\D/g, '');
     if (!digits.startsWith('994')) digits = '994';
     digits = digits.slice(0, 12);
     phoneInput.value = '+' + digits;
-
+    // Визуальная валидация
     if (digits.length === 12) {
-      phoneStatus.textContent = '✔';
+      phoneStatus.textContent = '+';
       phoneStatus.classList.add('valid');
       phoneStatus.classList.remove('error');
     } else {
-      phoneStatus.textContent = '✖';
+      phoneStatus.textContent = '-';
       phoneStatus.classList.add('error');
       phoneStatus.classList.remove('valid');
     }
@@ -334,13 +289,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // === Отправка отзыва ===
   submitBtn.addEventListener('click', () => {
+    // Получаем элементы
     const name = nameInput.value.trim();
     const phone = phoneInput.value.trim();
     const message = messageInput.value.trim();
     const photoFile = photoInput.files[0];
     const digits = phone.replace(/\D/g, '');
     const spaceCount = (name.match(/\s/g) || []).length;
-
+    // Проверяем каждое поле
     if (!name.replace(/\s/g, '')) {
       showFormError('Введите имя', nameInput);
       return;
@@ -357,37 +313,36 @@ document.addEventListener('DOMContentLoaded', () => {
       showFormError('Оставьте ваш отзыв', messageInput);
       return;
     }
-
+    // Создаём HTML нового отзыва
     const newReview = document.createElement('div');
     newReview.classList.add('reviews-item');
-
+    // Функция безопасного текста
     const safe = (text) => {
       const el = document.createElement('div');
       el.textContent = text;
-      return el.innerHTML;
+      return el.innerHTML; // Экранируем символы — защита от XSS
     };
-
+    // Отключаем кнопку
     submitBtn.disabled = true;
-
+    // Загружаем фото 
     if (photoFile) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        insertReviewHTML(e.target.result);
+        insertReviewHTML(e.target.result); // Получаем base64 URL
         submitBtn.disabled = false;
       };
       reader.readAsDataURL(photoFile);
     } else {
-      insertReviewHTML(null);
+      insertReviewHTML(null); // Без фото
       submitBtn.disabled = false;
     }
-
+    // Вставка отзыва в DOM
     function insertReviewHTML(photoURL) {
       const now = new Date().toLocaleDateString('ru-RU', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'
       });
-
       newReview.innerHTML = `
         <div class="review-block">
           <span class="review-date">${now}</span>
@@ -397,9 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
           ${photoURL ? `<img src="${photoURL}" alt="Фото отзыва" class="review-photo-thumb">` : ''}
         </div>
       `;
-
+      // Добавляем отзыв сразу после формы
       form.after(newReview);
-
       // Сброс всех значений
       nameInput.value = '';
       phoneInput.value = '';
@@ -409,13 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
       phoneStatus.textContent = '';
       nameStatus.classList.remove('valid', 'error');
       phoneStatus.classList.remove('valid', 'error');
-      photoLabel.textContent = '📸 Добавить фото';
+      photoLabel.textContent = 'Добавить фото';
       form.querySelector('.photo-wrapper')?.classList.remove('uploaded');
-
+      // Увеличение счётчика и сообщение об успехе
       if (typeof incrementTrustCount === 'function') {
-        incrementTrustCount();
+        incrementTrustCount(); // Увеличиваем trust-band
       }
-
+      // Сообщение об успехе
       showSuccessMessage('Отзыв отправлен 🎉');
     }
   });
@@ -435,19 +389,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const cartSendBtn = document.querySelector('.cart-send-btn');
   const cartTotalDisplay = document.querySelector('.cart-total');
   const orderItems = document.querySelectorAll('.order-item');
-
-  // Сохраняем корзину в localStorage
+  // Функции работы с localStorage
   function saveCartToStorage() {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }
-
-  // Обновление счётчика корзины
+  // Счётчик товаров
   function updateCartCount() {
     const total = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    // Считаем общее количество штук
     cartCount.textContent = total;
     cartToggle.dataset.cartCount = total;
-
-    // Показываем/скрываем иконку корзины
+    // Обновляем визуальное значение и атрибут
     if (total > 0) {
         cartToggle.style.opacity = '1';
         cartToggle.style.pointerEvents = 'auto';
@@ -456,29 +408,26 @@ document.addEventListener('DOMContentLoaded', () => {
         cartToggle.style.pointerEvents = 'none';
     }
   }
-
-  // Обновление общей суммы
+  // Сумма заказа
   function updateCartTotal() {
     const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     cartTotalDisplay.textContent = `Итого: ${total} ₼`;
   }
-
-  // Показ сообщения внутри корзины
+  // Сообщение, если корзина пуста
   function showCartMessage(text) {
     cartItemsList.innerHTML = `<p class="cart-empty-text">${text}</p>`;
     cartTotalDisplay.textContent = `Итого: 0 ₼`;
   }
-
   // Рендер товаров в корзине
   function renderCartItems() {
-    cartItemsList.innerHTML = '';
-
+    cartItemsList.innerHTML = ''; 
     if (cartItems.length === 0) {
       showCartMessage('Корзина успешно очищена');
       return;
     }
-
+    // Проверяем: если пусто — показываем сообщение и не продолжаем
     cartItems.forEach((item, index) => {
+      // Для каждого товара — генерируем блок
       const html = `
         <div class="cart-item">
           <div class="cart-item-img" style="background-image: url('${item.image}')"></div>
@@ -494,49 +443,47 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
+      // Используешь data-index, чтобы потом изменять количество
       cartItemsList.insertAdjacentHTML('beforeend', html);
     });
-
     updateCartTotal();
     saveCartToStorage();
   }
-
   // Добавление товара в корзину
   orderItems.forEach(item => {
     const addBtn = item.querySelector('.order-item-btn');
     addBtn.addEventListener('click', () => {
+      // При клике по кнопке «Добавить»
       const title = item.querySelector('.order-item-title')?.textContent.trim();
       const desc = item.querySelector('.order-item-desc')?.textContent.trim();
       const price = parseInt(item.dataset.price);
       const image = item.querySelector('.order-item-img')?.style.backgroundImage
         ?.replace(/^url\(["']?/, '')
         ?.replace(/["']?\)$/, '');
-
+      // Проверка на существование
       const existing = cartItems.find(el => el.title === title);
+      // Проверяем, есть ли уже такой товар в корзине
       if (existing) {
         existing.quantity += 1;
       } else {
         cartItems.push({ title, desc, price, image, quantity: 1 });
       }
-
       updateCartCount();
       renderCartItems();
-
       // Анимация полёта изображения в корзину
       const img = item.querySelector('.order-item-img');
       if (img) {
-        const clone = img.cloneNode(true);
+        const clone = img.cloneNode(true); // Клонируем изображение
         const rect = img.getBoundingClientRect();
         const cartIcon = document.querySelector('.cart-toggle');
-
-        clone.classList.add('fly-to-cart');
-        document.body.appendChild(clone);
-
+        clone.classList.add('fly-to-cart'); // Класс для анимации
+        document.body.appendChild(clone); // Вставляем на страницу
+        // Выставляем размеры и позицию клона
         clone.style.width = rect.width + 'px';
         clone.style.height = rect.height + 'px';
         clone.style.left = rect.left + 'px';
         clone.style.top = rect.top + 'px';
-
+        // Считаем расстояние до иконки корзины
         const cartRect = cartIcon.getBoundingClientRect();
         const cartCenterX = cartRect.left + cartRect.width / 2;
         const cartCenterY = cartRect.top + cartRect.height / 2;
@@ -544,36 +491,61 @@ document.addEventListener('DOMContentLoaded', () => {
         const imgCenterY = rect.top + rect.height / 2;
         const deltaX = cartCenterX - imgCenterX;
         const deltaY = cartCenterY - imgCenterY;
-
         requestAnimationFrame(() => {
             clone.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.2) rotate(1turn)`;
             clone.style.opacity = '0';
         });
-
         setTimeout(() => {
-            clone.remove();
+            clone.remove(); // Удаляем клон после анимации
         }, 800);
       }
     });
   });
-
-// Клик по иконке корзины
+  // Функция плавной прокрутки к элементу внутри контейнера
+  function smoothScrollToElement(container, target, duration = 1500) {
+    const start = container.scrollTop;
+    const end = target.offsetTop;
+    const distance = end - start;
+    const startTime = performance.now();
+    function scrollStep(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      container.scrollTop = start + distance * easeInOutCubic(progress);
+      if (progress < 1) {
+        requestAnimationFrame(scrollStep);
+      }
+    }
+    // Функция сглаживания: ускорение → замедление
+    function easeInOutCubic(t) {
+      return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+    requestAnimationFrame(scrollStep);
+  }
+  // Поведение модалки корзины
   cartToggle.addEventListener('click', () => {
     // Проверяем: если уже открыта — закрываем, иначе открываем
     if (cartModal.classList.contains('visible')) {
         cartModal.classList.remove('visible');
     } else {
         cartModal.classList.add('visible');
+        // Scroll!
+        const footer = document.querySelector('.cart-modal-footer');
+        const container = document.querySelector('.cart-modal-content');
+        // Контролируемая скорость
+        if (container && footer) {
+            smoothScrollToElement(container, footer, 3000);
+        }
+
     }
   });
-
   // Закрытие при клике по фону
   cartModal.addEventListener('click', e => {
     if (e.target === cartModal) {
         cartModal.classList.remove('visible');
     }
   });
-
   // Обработка +/- количества
   cartItemsList.addEventListener('click', e => {
     const index = parseInt(e.target.dataset.index);
@@ -589,12 +561,10 @@ document.addEventListener('DOMContentLoaded', () => {
         cartItems.splice(index, 1);
       }
     }
-
     updateCartCount();
     renderCartItems();
     saveCartToStorage();
   });
-
   // Очистка корзины
   cartClearBtn.addEventListener('click', () => {
     cartItems.length = 0;
@@ -602,22 +572,18 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCartItems();
     saveCartToStorage();
   });
-
   // Отправка заказа в WhatsApp
   cartSendBtn.addEventListener('click', () => {
     if (cartItems.length === 0) {
       showCartMessage('Ваша корзина пуста');
       return;
     }
-
+    // Собираем текст
     const message = cartItems.map(item =>
       `• ${item.title} — ${item.quantity} шт. (${item.price * item.quantity} ₼)`
     ).join('%0A');
-
     const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
     const fullMessage = `Здравствуйте! Я хочу заказать:%0A${message}%0A%0AОбщая сумма: ${total} ₼`;
-
     window.open(`https://wa.me/994709690901?text=${fullMessage}`, '_blank');
   });
 
@@ -630,12 +596,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const cart = document.querySelector('.cart-modal');
     const cartContent = document.querySelector('.cart-modal-content');
     const toggle = document.querySelector('.cart-toggle');
-
     const isCartOpen = cart.classList.contains('visible');
     const clickedInsideCart = cartContent.contains(e.target);
     const clickedToggle = toggle.contains(e.target);
     const isQuantityButton = e.target.classList.contains('quantity-decrease') || e.target.classList.contains('quantity-increase');
-
     if (isCartOpen && !clickedInsideCart && !clickedToggle && !isQuantityButton) {
       cart.classList.remove('visible');
     }
