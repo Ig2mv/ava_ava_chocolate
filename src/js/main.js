@@ -286,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
       phoneStatus.classList.remove('valid');
     }
   });
-
   // === Отправка отзыва ===
   submitBtn.addEventListener('click', () => {
     // Получаем элементы
@@ -537,7 +536,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (container && footer) {
             smoothScrollToElement(container, footer, 3000);
         }
-
     }
   });
   // Закрытие при клике по фону
@@ -550,11 +548,9 @@ document.addEventListener('DOMContentLoaded', () => {
   cartItemsList.addEventListener('click', e => {
     const index = parseInt(e.target.dataset.index);
     if (isNaN(index)) return;
-
     if (e.target.classList.contains('quantity-increase')) {
       cartItems[index].quantity += 1;
     }
-
     if (e.target.classList.contains('quantity-decrease')) {
       cartItems[index].quantity -= 1;
       if (cartItems[index].quantity <= 0) {

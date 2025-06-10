@@ -608,7 +608,6 @@ body.fonts-loading {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
   transition: background 0.3s ease, border-color 0.3s ease;
-  will-change: transform;
 }
 .main .order-section .order-content .order-scroll-wrapper .order-scroll-container .order-items-container .order-item .order-item-footer .order-item-btn:active {
   transform: scale(0.97);
@@ -688,7 +687,6 @@ body.fonts-loading {
   display: flex;
   gap: clamp(0.5rem, 0.4146rem + 0.4878vw, 1rem);
   transition: transform 0.3s ease;
-  will-change: transform;
 }
 .main .about-section .about-content .about-text .about-features .feature-item:hover {
   transform: translateX(0.2rem);
@@ -889,7 +887,6 @@ body.fonts-loading {
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
   animation: shine 3s infinite;
-  will-change: transform;
 }
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .trust-band .trust-text {
   font-size: clamp(1rem, 1rem + (1.5 - 1) * (100vw - 280px) / (1920 - 280), 1.5rem);
@@ -934,7 +931,6 @@ body.fonts-loading {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.15);
   transition: transform 0.3s ease, border-color 0.3s ease;
-  will-change: transform;
 }
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .reviews-item:hover {
   transform: translateY(-3px);
@@ -1016,9 +1012,9 @@ body.fonts-loading {
   width: 100%;
   padding: 0.6rem 1rem;
   border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
+  background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3 ease;
 }
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .review-form input::placeholder,
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .review-form textarea::placeholder {
@@ -1027,7 +1023,7 @@ body.fonts-loading {
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .review-form input:focus,
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .review-form textarea:focus {
   border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .review-form textarea {
   resize: none;
@@ -1101,7 +1097,7 @@ body.fonts-loading {
   border-radius: 0.75rem;
   background: linear-gradient(135deg, rgba(228, 213, 189, 0.1), rgba(228, 213, 189, 0.3));
   border: 1px solid rgba(228, 213, 189, 0.3);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3 ease;
 }
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .review-form .submit-review-btn:active {
   transform: scale(0.97);
@@ -1140,10 +1136,12 @@ body.fonts-loading {
   border: 1px solid rgba(228, 213, 189, 0.3);
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3 ease;
   position: relative;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
 }
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .review-form .photo-wrapper .photo-label:active {
   transform: scale(0.97);
@@ -1171,7 +1169,6 @@ body.fonts-loading {
   width: 100%;
   text-align: center;
   transition: opacity 0.3s ease;
-  will-change: opacity;
 }
 .main .reviews-section .reviews-content .reviews-scroll-wrapper .reviews-scroll-container .reviews-items-container .review-form .submit-controls .submit-review-btn {
   opacity: 1;
@@ -1247,12 +1244,17 @@ body.fonts-loading {
   align-items: center;
   justify-content: center;
   z-index: 1001;
+  transition: opacity 0.4s ease;
 }
 .main .cart-modal.visible {
-  opacity: 1;
   display: flex;
+  opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+.main .cart-modal.visible .cart-modal-content {
+  opacity: 1;
+  transform: scale(1);
 }
 .main .cart-modal .cart-modal-content {
   position: relative;
@@ -1268,6 +1270,9 @@ body.fonts-loading {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 1s ease, transform 1s ease;
 }
 .main .cart-modal .cart-modal-content .cart-modal-title {
   margin-top: 1.5rem;
@@ -1547,7 +1552,6 @@ body.fonts-loading {
   border-radius: 1rem;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   transition: transform 1s ease-in-out, opacity 1s ease-in-out;
-  will-change: transform, opacity;
 }
 
 .touchpad-toggle {
