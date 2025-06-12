@@ -97,29 +97,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //! DataFiltrPrice
 document.addEventListener('DOMContentLoaded', () => {
-  // Элементы
-  const filterButtons = document.querySelectorAll('.filter-btn');
-  const orderItems = document.querySelectorAll('.order-item');
-  // Навешиваем клик на каждую кнопку
-  filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      // Снимаем active со всех кнопок, затем добавляем
-      filterButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      // Из текущей кнопки достаём минимальную и максимальную цену фильтра
-      const min = parseInt(button.dataset.min);
-      const max = parseInt(button.dataset.max);
-      // Для каждой карточки читаем её data-price, и сравниваем с выбранным диапазоном
-      orderItems.forEach(item => {
-        const price = parseInt(item.dataset.price);
-        if (price >= min && price <= max) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
-        }
-      });
+    // Элементы
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const orderItems = document.querySelectorAll('.order-item');
+    let currentFilter = null; // текущая активная кнопка
+    // Навешиваем обработчик на каждую кнопку фильтра
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Если кнопка уже выбрана — выходим
+            if (button === currentFilter) return;
+            // Обновляем активную кнопку
+            currentFilter = button;
+            // Удаляем .active со всех кнопок → добавляем на текущую
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            // Получаем границы фильтра из data-атрибутов
+            const min = parseInt(button.dataset.min);
+            const max = parseInt(button.dataset.max);
+            const delay = 500; // задержка между карточками (волна)
+            // Скрываем все карточки, не подходящие по цене
+            orderItems.forEach(item => {
+                const price = parseInt(item.dataset.price);
+                if (price < min || price > max) {
+                    item.classList.remove('animating'); // убираем анимацию
+                    item.classList.add('hidden');       // скрываем
+                }
+            });
+            // Показываем подходящие карточки с анимацией "волной"
+            let visibleIndex = 0; // счётчик для задержки
+            orderItems.forEach(item => {
+                const price = parseInt(item.dataset.price);
+                if (price >= min && price <= max) {
+                    item.classList.remove('hidden'); // сразу показываем
+                    setTimeout(() => {
+                        item.classList.remove('animating'); // сброс
+                        void item.offsetWidth;              // сброс layout
+                        item.classList.add('animating');    // запуск анимации
+                    }, visibleIndex * delay);
+                    visibleIndex++;
+                }
+            });
+        });
     });
-  });
+    // ✅ При загрузке: автоматически нажимаем на первую кнопку (S)
+    const defaultBtn = document.querySelector('.filter-btn[data-min="0"]');
+    if (defaultBtn) defaultBtn.click();
 });
 
 //! MainImg
@@ -532,9 +554,34 @@ document.addEventListener('DOMContentLoaded', () => {
         // Scroll!
         const footer = document.querySelector('.cart-modal-footer');
         const container = document.querySelector('.cart-modal-content');
-        // Контролируемая скорость
         if (container && footer) {
-            smoothScrollToElement(container, footer, 3000);
+            let stopScroll = false; // флаг остановки
+            // Слушатели: колесо мыши или касание — прерывают скролл
+            const cancelScroll = () => { stopScroll = true; };
+            container.addEventListener('wheel', cancelScroll, { once: true, passive: true });
+            container.addEventListener('touchstart', cancelScroll, { once: true, passive: true });
+            // Начальные параметры
+            const start = container.scrollTop;
+            const end = footer.offsetTop;
+            const distance = end - start;
+            const duration = 3000;
+            const startTime = performance.now();
+            // Кадровая функция прокрутки
+            function scrollStep(currentTime) {
+                if (stopScroll) return;
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                container.scrollTop = start + distance * easeInOutCubic(progress);
+                // Повторяем пока не дойдём до конца
+                if (progress < 1) requestAnimationFrame(scrollStep);
+            }
+            // Функция сглаживания — ускорение → замедление
+            function easeInOutCubic(t) {
+                return t < 0.5
+                    ? 4 * t * t * t
+                    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            }
+            requestAnimationFrame(scrollStep);
         }
     }
   });
@@ -563,10 +610,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   // Очистка корзины
   cartClearBtn.addEventListener('click', () => {
-    cartItems.length = 0;
-    updateCartCount();
-    renderCartItems();
-    saveCartToStorage();
+      const cartItemsEls = cartItemsList.querySelectorAll('.cart-item');
+      if (!cartItemsEls.length) return;
+      cartItemsEls.forEach((item, i) => {
+          // Случайные значения смещения и поворота
+          const x = (Math.random() - 0.5) * 400 + 'px';
+          const y = (Math.random() - 0.5) * 400 + 'px';
+          const rot = (Math.random() - 0.5) * 180 + 'deg';
+          item.style.setProperty('--x', x);
+          item.style.setProperty('--y', y);
+          item.style.setProperty('--rot', rot);
+          item.classList.add('animate-out');
+      });
+      // Ждём окончания анимации и очищаем всё
+      setTimeout(() => {
+          cartItems.length = 0;
+          updateCartCount();
+          renderCartItems();
+          saveCartToStorage();
+      }, 700); // должно совпадать с длительностью анимации
   });
   // Отправка заказа в WhatsApp
   cartSendBtn.addEventListener('click', () => {
@@ -582,11 +644,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fullMessage = `Здравствуйте! Я хочу заказать:%0A${message}%0A%0AОбщая сумма: ${total} ₼`;
     window.open(`https://wa.me/994709690901?text=${fullMessage}`, '_blank');
   });
-
   // Инициализация при старте
   updateCartCount();
   renderCartItems();
-  
   // Закрытие корзины по клику вне её и иконки
   document.addEventListener('click', (e) => {
     const cart = document.querySelector('.cart-modal');
