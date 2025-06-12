@@ -364,7 +364,7 @@ body.fonts-loading {
   letter-spacing: 0.03em;
   line-height: 1.4;
   font-weight: 100;
-  margin-top: 0.5rem;
+  padding: 0.3rem;
   color: #333;
   text-decoration: none;
 }
