@@ -11,10 +11,6 @@
 
 <body class="fonts-loading">
     <!-- Preloader -->
-    <div id="preloader">
-        <div class="preloader-tittle">AVA CHOCOLATE DESIGN</div>
-        <div class="loading-preloader">loading<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
-    </div>
 
     <!-- Header -->
     <header class="header">
@@ -53,7 +49,7 @@
     </header>
 
     <!-- Main -->
-    <main class="main">
+    <main class="main" role="main">
         <!-- HeroSection -->
         <section class="hero-section" id="hero" data-title="Главная">
             <div class="hero-content">
@@ -238,10 +234,10 @@
                 <!-- Правая часть - галерея -->
                 <div class="about-gallery">
                     <div class="gallery-main">
-                        <div class="main-image active" style="background-image: url('src/img/test.jpg')" aria-label="Шоколадная композиция для юбилея">
+                        <div class="main-image active" style="background-image: url('src/')" aria-label="Шоколадная композиция для юбилея">
                             <div class="image-caption">Индивидуальный заказ</div>
                         </div>
-                        <div class="main-image" style="background-image: url('src/img/test.jpg')" aria-label="Свадебный шоколадный букет">
+                        <div class="main-image" style="background-image: url('src/')" aria-label="Свадебный шоколадный букет">
                             <div class="image-caption">Свадебная композиция</div>
                         </div>  
                         <div class="main-image" style="background-image: url('src/')" aria-label="Корпоративный шоколадный подарок">
@@ -250,10 +246,10 @@
                     </div>
                     <div class="gallery-thumbs">
                         <div class="thumb-item active">
-                            <div class="thumb-image" style="background-image: url('src/img/test.jpg')" aria-label="Миниатюра: юбилейная композиция"></div>
+                            <div class="thumb-image" style="background-image: url('src/')" aria-label="Миниатюра: юбилейная композиция"></div>
                         </div>
                         <div class="thumb-item">
-                            <div class="thumb-image" style="background-image: url('src/img/test.jpg')" aria-label="Миниатюра: свадебный букет"></div>
+                            <div class="thumb-image" style="background-image: url('src/')" aria-label="Миниатюра: свадебный букет"></div>
                         </div>
                         <div class="thumb-item">
                             <div class="thumb-image" style="background-image: url('src/')" aria-label="Миниатюра: корпоративный подарок"></div>
@@ -304,48 +300,52 @@
                 </div>
             </div>
         </section>
-        <!-- CartModal -->
-        <div class="cart-modal">
-            <div class="cart-modal-content">
-                <h2 class="cart-modal-title">Оформление заказа</h2>
-                <div class="cart-menu-line"></div>
-                <div class="cart-items-list"></div>
-                <div class="cart-modal-footer">
-                    <div class="cart-total">Итого: 0 ₼</div>
-                    <div class="cart-actions">
-                        <button class="cart-clear-btn">Очистить корзину</button>
-                        <button class="cart-send-btn">Оформить заказ</button>
+    </main>
+
+    <!-- CartModal -->
+    <div class="cart-modal">
+        <div class="cart-modal-content">
+            <h2 class="cart-modal-title">Оформление заказа</h2>
+            <div class="cart-menu-line"></div>
+            <div class="cart-items-list"></div>
+            <div class="cart-modal-footer">
+                <div class="cart-total">Итого: 0 ₼</div>
+                <div class="cart-actions">
+                    <button class="cart-clear-btn">Очистить корзину</button>
+                    <button class="cart-send-btn">Оформить заказ</button>
                 </div>
             </div>
         </div>
-        </div>
-    </main>
+    </div>
 
-    <!-- AudioToggle -->
-    <audio id="background-audio" loop>
-            <source src="src/audio/background.mp3" type="audio/mpeg">
-            Ваш браузер не поддерживает аудио.
-    </audio>
-    <!-- On/ Off -->
-    <button type="button" class="div-toggle audio-toggle" aria-label="Включить звук" data-audio-state="muted">
-        <img src="./src/img/svg/muted.svg" class="div-icons audio-icon" alt="Иконка включения/выключения звука">
-    </button>
-
-    <!-- CartToggle -->
+    <!-- === UI TOGGLES & AUDIO === -->
+    <!-- Кнопка корзины -->
     <button type="button" class="div-toggle cart-toggle" data-cart-count="0" aria-label="Открыть корзину">
         <img src="./src/img/svg/cart.svg" alt="Корзина" class="div-icons cart-icon" aria-hidden="true">
         <span class="cart-count">0</span>
     </button>
 
-    <!-- TouchpadToggle -->
+    <!-- Фоновая музыка -->
+    <audio id="background-audio" loop>
+        <source src="src/" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
+    </audio>
+
+    <!-- Переключатель звука -->
+    <button type="button" class="div-toggle audio-toggle" aria-label="Включить звук" data-audio-state="muted">
+        <img src="./src/img/svg/muted.svg" class="div-icons audio-icon" alt="Иконка включения/выключения звука">
+    </button>
+
+    <!-- Иконка мыши / свайпа -->
     <div class="div-toggle touchpad-toggle" aria-label="Свайпать" role="img">
         <img src="./src/img/svg/mouse.svg" class="div-icons touchpad-icon" alt="Иконка для скроллинга">
     </div>
 
-    <!-- AudioClick -->
+    <!-- Аудио-клик на кнопку -->
     <audio id="button-click" preload="auto">
         <source src="src/audio/button.mp3" type="audio/mpeg">
     </audio>
+    <!-- =========================== -->
 
     <!-- JS -->
     <script src="src/js/main.js"></script>

@@ -6,40 +6,6 @@ document.fonts.ready.then(() => {
     document.body.classList.remove('fonts-loading');
 });
 
-//* Preloader
-document.addEventListener('DOMContentLoaded', function() {
-  // Элементы
-  const preloader = document.getElementById('preloader');
-  // Минимальное время показа прелоадера (5 секунд)
-  setTimeout(function() {
-    // Добавляем класс к body, чтобы показать контент
-    document.body.classList.add('loaded');
-    // Анимация исчезновения прелоадера
-    preloader.style.animation = 'fadeOut 1.5s ease forwards';
-    // Удаляем прелоадер после анимации
-    setTimeout(function() {
-      preloader.remove();
-    }, 1500);
-  }, 1000);
-});
-
-
-// //! QrCode
-// document.addEventListener("DOMContentLoaded", () => {
-//     // Находим обёртку вокруг QR-кода
-//     const qrWrapper = document.getElementById("qrWrapper");
-
-//     // При клике по самому QR — увеличиваем или возвращаем обратно
-//     qrWrapper.addEventListener("click", (e) => {
-//         e.stopPropagation();
-//         qrWrapper.classList.toggle("active");
-//     });
-
-//     // При клике вне QR — автоматически скрываем (убираем .active)
-//     document.addEventListener("click", () => {
-//         qrWrapper.classList.remove("active");
-//     });
-// });
 
 //! MenuToggle
 document.addEventListener('DOMContentLoaded', () => {
@@ -81,12 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
   audioToggle.addEventListener('click', () => {
     //Если data-audio-state="muted", значит звук выключен, и мы его включим
     const isMuted = audioToggle.dataset.audioState === 'muted';
-    // ✅ Блок «включения звука»
+    // Блок «включения звука»
     if (isMuted) {
       audio.play(); // Воспроизводим фоновую музыку
       audioToggle.dataset.audioState = 'playing'; // Обновляем атрибут
       audioIcon.src = './src/img/svg/playing.svg'; // Меняем иконку
-      // ⛔ Блок «отключения звука»:
+      // Блок «отключения звука»:
     } else {
       audio.pause(); // Останавливаем музыку
       audioToggle.dataset.audioState = 'muted'; // Обновляем атрибут
@@ -546,9 +512,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   // Поведение модалки корзины
   cartToggle.addEventListener('click', () => {
-    // Проверяем: если уже открыта — закрываем, иначе открываем
     if (cartModal.classList.contains('visible')) {
-        cartModal.classList.remove('visible');
+        cartModal.classList.add('hiding');
+        setTimeout(() => {
+            cartModal.classList.remove('visible', 'hiding');
+        }, 400);
     } else {
         cartModal.classList.add('visible');
         // Scroll!

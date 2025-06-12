@@ -24,19 +24,11 @@ $type-ratio: 1.25;
     );
 }
 
-//! Специальные миксины для прелоадера
-@mixin preloader-title {
-    @include fluid-type(1.5, 50);
-    font-family: "NeueHelvetica", sans-serif;
-    font-weight: 100;
-    letter-spacing: 0.2em;
-}
-
-@mixin preloader-subtitle {
-    @include fluid-type(0.9, 1.4);
-    font-family: "NeueHelvetica", sans-serif;
-    font-weight: 100;
-    letter-spacing: 0.3em;
+//! Зеркало души
+@mixin blurred {
+    background: transparent;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 //! Система типографики
