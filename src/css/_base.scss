@@ -12,7 +12,9 @@ html, body {
     width: 100%;                    // Ширина на весь экран
     scroll-behavior: smooth;        // Плавная прокрутка для якорей
     overflow-x: hidden;             // Убирает горизонтальный скролл
+    overscroll-behavior-y: none;    // Отключает bounce на iOS
     height: 100%;                   // Обязательно для scroll-snap работать стабильно
+    max-width: 100vw;               // Лучший способ защититься от горизонтального скролла
 }
 
 html {
