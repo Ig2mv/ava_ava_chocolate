@@ -6,11 +6,24 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Ava Chocolate Design</title>
     <link rel="stylesheet" href="src/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body class="fonts-loading">
     <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader__content">
+            <div class="title-line" data-text="AVA CHOCOLATE"></div>
+            <div class="title-line" data-text="DESIGN"></div>
+            <div class="loading-line">
+                <span class="loading-text" data-text="loading"></span>
+                <span class="dot dot1">.</span>
+                <span class="dot dot2">.</span>
+                <span class="dot dot3">.</span>
+            </div>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="header">
@@ -327,7 +340,7 @@
 
     <!-- Фоновая музыка -->
     <audio id="background-audio" loop>
-        <source src="src/" type="audio/mpeg">
+        <source src="src/audio/background-audio.mp3" type="audio/mpeg">
         Ваш браузер не поддерживает аудио.
     </audio>
 

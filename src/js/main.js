@@ -1,10 +1,57 @@
 //? StrictRegime
 'use strict';
 
-//*FontsLoading
+//?FontsLoading
 document.fonts.ready.then(() => {
-    document.body.classList.remove('fonts-loading');
+  document.body.classList.remove('fonts-loading');
 });
+
+
+//* Preloader
+document.addEventListener('DOMContentLoaded', () => {
+    const titleLines = document.querySelectorAll('.title-line');
+    const loadingTextSpan = document.querySelector('.loading-text');
+    const dots = document.querySelectorAll('.dot');
+    // ===== Анимация заголовков (AVA CHOCOLATE, DESIGN) =====
+    titleLines.forEach((line, lineIndex) => {
+        const text = line.getAttribute('data-text');
+        line.innerHTML = '';
+        [...text].forEach((char, i) => {
+            const span = document.createElement('span');
+            span.className = char === ' ' ? 'space' : 'letter';
+            span.textContent = char;
+            if (char !== ' ') {
+                span.style.animationDelay = `${lineIndex * 1.25 + i * 0.15}s`;
+            }
+            line.appendChild(span);
+        });
+    });
+    // ===== Анимация "loading" =====
+    const loadingText = loadingTextSpan.getAttribute('data-text');
+    loadingTextSpan.innerHTML = '';
+    [...loadingText].forEach((char, i) => {
+        const span = document.createElement('span');
+        span.className = 'letter';
+        span.textContent = char;
+        span.style.animationDelay = `${2 + i * 0.15}s`;
+        loadingTextSpan.appendChild(span);
+    });
+    // ===== Активация точек после появления loading
+    dots.forEach((dot, i) => {
+        dot.style.animationDelay = `${3.2 + i * 0.2}s`;
+    });
+    // ===== Скрытие прелодера =====
+    setTimeout(() => {
+        const preloader = document.querySelector('.preloader');
+        preloader.style.transition = 'opacity 2s ease';
+        preloader.style.opacity = '0';
+        setTimeout(() => {
+            preloader.style.display = 'none';
+        }, 2000);
+    }, 5000);
+});
+
+
 
 
 //! MenuToggle
@@ -63,52 +110,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //! DataFiltrPrice
 document.addEventListener('DOMContentLoaded', () => {
-    // Элементы
+    // Элементы фильтра и карточек
     const filterButtons = document.querySelectorAll('.filter-btn');
     const orderItems = document.querySelectorAll('.order-item');
     let currentFilter = null; // текущая активная кнопка
+    let animationTimeouts = []; // массив для хранения всех таймеров
     // Навешиваем обработчик на каждую кнопку фильтра
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Если кнопка уже выбрана — выходим
+            // Если кнопка уже выбрана — ничего не делаем
             if (button === currentFilter) return;
             // Обновляем активную кнопку
             currentFilter = button;
-            // Удаляем .active со всех кнопок → добавляем на текущую
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             // Получаем границы фильтра из data-атрибутов
             const min = parseInt(button.dataset.min);
             const max = parseInt(button.dataset.max);
             const delay = 500; // задержка между карточками (волна)
-            // Скрываем все карточки, не подходящие по цене
+            // Перед запуском новой анимации — очищаем ВСЕ старые таймеры
+            animationTimeouts.forEach(t => clearTimeout(t));
+            animationTimeouts = [];
+            // Скрываем все неподходящие карточки (сразу)
             orderItems.forEach(item => {
                 const price = parseInt(item.dataset.price);
                 if (price < min || price > max) {
-                    item.classList.remove('animating'); // убираем анимацию
+                    item.classList.remove('animating'); // сбрасываем анимацию
                     item.classList.add('hidden');       // скрываем
                 }
             });
-            // Показываем подходящие карточки с анимацией "волной"
-            let visibleIndex = 0; // счётчик для задержки
+            // Показываем подходящие карточки с эффектом волны
+            let visibleIndex = 0; // счётчик задержек
             orderItems.forEach(item => {
                 const price = parseInt(item.dataset.price);
                 if (price >= min && price <= max) {
                     item.classList.remove('hidden'); // сразу показываем
-                    setTimeout(() => {
+                    // Устанавливаем таймер анимации
+                    const timeoutId = setTimeout(() => {
                         item.classList.remove('animating'); // сброс
-                        void item.offsetWidth;              // сброс layout
+                        void item.offsetWidth;              // перезапуск layout
                         item.classList.add('animating');    // запуск анимации
                     }, visibleIndex * delay);
+                    animationTimeouts.push(timeoutId); // сохраняем ID
                     visibleIndex++;
                 }
             });
         });
     });
-    // ✅ При загрузке: автоматически нажимаем на первую кнопку (S)
+    // При загрузке страницы: автоматически нажимаем на первую кнопку (S)
     const defaultBtn = document.querySelector('.filter-btn[data-min="0"]');
     if (defaultBtn) defaultBtn.click();
 });
+
 
 //! MainImg
 document.addEventListener('DOMContentLoaded', () => {
@@ -629,3 +682,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
