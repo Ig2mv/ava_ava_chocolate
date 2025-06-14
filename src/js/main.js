@@ -1,6 +1,11 @@
 //? StrictRegime
 'use strict';
 
+//? Скролл к началу страницы при перезагрузке
+window.addEventListener('beforeunload', () => {
+    window.scrollTo(0, 0);
+});
+
 //?FontsLoading
 document.fonts.ready.then(() => {
   document.body.classList.remove('fonts-loading');
