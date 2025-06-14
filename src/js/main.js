@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const titleLines = document.querySelectorAll('.title-line');
     const loadingTextSpan = document.querySelector('.loading-text');
     const dots = document.querySelectorAll('.dot');
-    // ===== Анимация заголовков (AVA CHOCOLATE, DESIGN) =====
+    // === Анимация заголовков (AVA CHOCOLATE, DESIGN) ===
     titleLines.forEach((line, lineIndex) => {
         const text = line.getAttribute('data-text');
         line.innerHTML = '';
@@ -20,27 +20,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const span = document.createElement('span');
             span.className = char === ' ' ? 'space' : 'letter';
             span.textContent = char;
-            if (char !== ' ') {
-                span.style.animationDelay = `${lineIndex * 1.25 + i * 0.15}s`;
-            }
+            span.style.opacity = '0';
             line.appendChild(span);
+            // Покадровая активация
+            setTimeout(() => {
+                requestAnimationFrame(() => {
+                    span.style.opacity = '1';
+                    span.classList.add('letter-animated');
+                });
+            }, (lineIndex * 1250) + i * 150);
         });
     });
-    // ===== Анимация "loading" =====
+    // === Анимация слова "loading" ===
     const loadingText = loadingTextSpan.getAttribute('data-text');
     loadingTextSpan.innerHTML = '';
     [...loadingText].forEach((char, i) => {
         const span = document.createElement('span');
         span.className = 'letter';
         span.textContent = char;
-        span.style.animationDelay = `${2 + i * 0.15}s`;
+        span.style.opacity = '0';
         loadingTextSpan.appendChild(span);
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                span.style.opacity = '1';
+                span.classList.add('letter-animated');
+            });
+        }, 2000 + i * 150);
     });
-    // ===== Активация точек после появления loading
+    // === Анимация точек ===
     dots.forEach((dot, i) => {
-        dot.style.animationDelay = `${3.2 + i * 0.2}s`;
+        dot.style.opacity = '0';
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                dot.style.opacity = '1';
+                dot.classList.add('dot-animated');
+            });
+        }, 3200 + i * 200);
     });
-    // ===== Скрытие прелодера =====
+    // === Скрытие прелодера ===
     setTimeout(() => {
         const preloader = document.querySelector('.preloader');
         preloader.style.transition = 'opacity 2s ease';
@@ -51,7 +68,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 5000);
 });
 
-
+// * Активация staggered-анимаций
+document.addEventListener('DOMContentLoaded', () => {
+    // === 1. Анимация header и hero ===
+    document.querySelector('header')?.classList.add('animate');
+    document.querySelector('.hero-section')?.classList.add('animate');
+    // === 2. Анимация UI-элементов
+    document.querySelectorAll('.cart-toggle, .audio-toggle, .touchpad-toggle')
+        .forEach(el => el.classList.add('animate'));
+    // === 3. Анимация .staggered по скроллу
+    const staggeredElements = document.querySelectorAll('.staggered');
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+                obs.unobserve(entry.target); // если однократно
+            }
+        });
+    }, { threshold: 0.2 }); // чуть выше, чтобы раньше срабатывало
+    staggeredElements.forEach(el => observer.observe(el));
+});
 
 
 //! MenuToggle
@@ -124,6 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
             currentFilter = button;
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
+            // Прокручиваем список товаров в начало
+            const scrollContainer = document.querySelector('.order-scroll-container');
+            if (scrollContainer) scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
             // Получаем границы фильтра из data-атрибутов
             const min = parseInt(button.dataset.min);
             const max = parseInt(button.dataset.max);
@@ -161,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultBtn = document.querySelector('.filter-btn[data-min="0"]');
     if (defaultBtn) defaultBtn.click();
 });
-
 
 //! MainImg
 document.addEventListener('DOMContentLoaded', () => {
@@ -415,7 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
 //! CartLogic
 // Загружаем корзину из localStorage 
 const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -436,16 +473,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Счётчик товаров
   function updateCartCount() {
     const total = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    // Считаем общее количество штук
     cartCount.textContent = total;
     cartToggle.dataset.cartCount = total;
-    // Обновляем визуальное значение и атрибут
-    if (total > 0) {
-        cartToggle.style.opacity = '1';
-        cartToggle.style.pointerEvents = 'auto';
+    // 👇 Если корзина пустая — скрываем счётчик
+    if (total === 0) {
+      cartToggle.classList.add('empty');
     } else {
-        cartToggle.style.opacity = '0';
-        cartToggle.style.pointerEvents = 'none';
+      cartToggle.classList.remove('empty');
     }
   }
   // Сумма заказа
@@ -462,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderCartItems() {
     cartItemsList.innerHTML = ''; 
     if (cartItems.length === 0) {
-      showCartMessage('Корзина успешно очищена');
+      showCartMessage('Ваша корзина пуста');
       return;
     }
     // Проверяем: если пусто — показываем сообщение и не продолжаем
@@ -566,50 +600,50 @@ document.addEventListener('DOMContentLoaded', () => {
   // Поведение модалки корзины
   cartToggle.addEventListener('click', () => {
     if (cartModal.classList.contains('visible')) {
-        cartModal.classList.add('hiding');
-        setTimeout(() => {
-            cartModal.classList.remove('visible', 'hiding');
-        }, 400);
+      cartModal.classList.add('hiding');
+      setTimeout(() => {
+        cartModal.classList.remove('visible', 'hiding');
+      }, 400);
     } else {
-        cartModal.classList.add('visible');
-        // Scroll!
-        const footer = document.querySelector('.cart-modal-footer');
-        const container = document.querySelector('.cart-modal-content');
-        if (container && footer) {
-            let stopScroll = false; // флаг остановки
-            // Слушатели: колесо мыши или касание — прерывают скролл
-            const cancelScroll = () => { stopScroll = true; };
-            container.addEventListener('wheel', cancelScroll, { once: true, passive: true });
-            container.addEventListener('touchstart', cancelScroll, { once: true, passive: true });
-            // Начальные параметры
-            const start = container.scrollTop;
-            const end = footer.offsetTop;
-            const distance = end - start;
-            const duration = 3000;
-            const startTime = performance.now();
-            // Кадровая функция прокрутки
-            function scrollStep(currentTime) {
-                if (stopScroll) return;
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                container.scrollTop = start + distance * easeInOutCubic(progress);
-                // Повторяем пока не дойдём до конца
-                if (progress < 1) requestAnimationFrame(scrollStep);
-            }
-            // Функция сглаживания — ускорение → замедление
-            function easeInOutCubic(t) {
-                return t < 0.5
-                    ? 4 * t * t * t
-                    : 1 - Math.pow(-2 * t + 2, 3) / 2;
-            }
-            requestAnimationFrame(scrollStep);
+      cartModal.classList.add('visible');
+      // Scroll!
+      const footer = document.querySelector('.cart-modal-footer');
+      const container = document.querySelector('.cart-modal-content');
+      if (container && footer) {
+        let stopScroll = false; // флаг остановки
+        // Слушатели: колесо мыши или касание — прерывают скролл
+        const cancelScroll = () => { stopScroll = true; };
+        container.addEventListener('wheel', cancelScroll, { once: true, passive: true });
+        container.addEventListener('touchstart', cancelScroll, { once: true, passive: true });
+        // Начальные параметры
+        const start = container.scrollTop;
+        const end = footer.offsetTop;
+        const distance = end - start;
+        const duration = 3000;
+        const startTime = performance.now();
+        // Кадровая функция прокрутки
+        function scrollStep(currentTime) {
+          if (stopScroll) return;
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          container.scrollTop = start + distance * easeInOutCubic(progress);
+          // Повторяем пока не дойдём до конца
+          if (progress < 1) requestAnimationFrame(scrollStep);
         }
+        // Функция сглаживания — ускорение → замедление
+        function easeInOutCubic(t) {
+          return t < 0.5
+            ? 4 * t * t * t
+            : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        requestAnimationFrame(scrollStep);
+      }
     }
   });
   // Закрытие при клике по фону
   cartModal.addEventListener('click', e => {
     if (e.target === cartModal) {
-        cartModal.classList.remove('visible');
+      cartModal.classList.remove('visible');
     }
   });
   // Обработка +/- количества
@@ -631,25 +665,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   // Очистка корзины
   cartClearBtn.addEventListener('click', () => {
-      const cartItemsEls = cartItemsList.querySelectorAll('.cart-item');
-      if (!cartItemsEls.length) return;
-      cartItemsEls.forEach((item, i) => {
-          // Случайные значения смещения и поворота
-          const x = (Math.random() - 0.5) * 400 + 'px';
-          const y = (Math.random() - 0.5) * 400 + 'px';
-          const rot = (Math.random() - 0.5) * 180 + 'deg';
-          item.style.setProperty('--x', x);
-          item.style.setProperty('--y', y);
-          item.style.setProperty('--rot', rot);
-          item.classList.add('animate-out');
-      });
-      // Ждём окончания анимации и очищаем всё
-      setTimeout(() => {
-          cartItems.length = 0;
-          updateCartCount();
-          renderCartItems();
-          saveCartToStorage();
-      }, 700); // должно совпадать с длительностью анимации
+    const cartItemsEls = cartItemsList.querySelectorAll('.cart-item');
+    if (!cartItemsEls.length) return;
+    cartItemsEls.forEach((item, i) => {
+      // Случайные значения смещения и поворота
+      const x = (Math.random() - 0.5) * 400 + 'px';
+      const y = (Math.random() - 0.5) * 400 + 'px';
+      const rot = (Math.random() - 0.5) * 180 + 'deg';
+      item.style.setProperty('--x', x);
+      item.style.setProperty('--y', y);
+      item.style.setProperty('--rot', rot);
+      item.classList.add('animate-out');
+    });
+    // Ждём окончания анимации и очищаем всё
+    setTimeout(() => {
+      cartItems.length = 0;
+      updateCartCount();
+      renderCartItems();
+      saveCartToStorage();
+    }, 700); // должно совпадать с длительностью анимации
   });
   // Отправка заказа в WhatsApp
   cartSendBtn.addEventListener('click', () => {
@@ -682,4 +716,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
 

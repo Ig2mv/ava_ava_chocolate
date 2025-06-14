@@ -33,7 +33,7 @@ $type-ratio: 1.25;
 
 //! Система типографики
 @mixin logo {
-    @include fluid-type(1.5, 10.5);
+    @include fluid-type(1.5, 13);
     font-family: "NeueHelvetica", sans-serif;
     font-weight: 300;
     letter-spacing: -0.02em;
