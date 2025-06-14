@@ -37,14 +37,14 @@ body {
     // Устанавливаем основной фон
     background: linear-gradient(
         135deg,
-        #c9a18f,
-        #c09584,
-        #b58375,
-        #a17267,
-        #8a5d54,
-        #734a42
+        #a5725f,  // тёмный карамельный мокко
+        #b9826b,  // обжаренный миндаль
+        #c79680,  // тёплый крем-латте
+        #d5a88f,  // какао с молоком
+        #b97c67,  // сливочная корица
+        #a76a54   // гляссе/печенье
     );
-    background-size: 400% 400%;
+    background-size: 300% 300%;
     animation: gradientFlow 25s ease infinite;
     will-change: background;
     @keyframes gradientFlow {

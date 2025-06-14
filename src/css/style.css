@@ -39,8 +39,8 @@ body {
   user-select: none;
   cursor: default;
   overflow-wrap: break-word;
-  background: linear-gradient(135deg, #c9a18f, #c09584, #b58375, #a17267, #8a5d54, #734a42);
-  background-size: 400% 400%;
+  background: linear-gradient(135deg, #a5725f, #b9826b, #c79680, #d5a88f, #b97c67, #a76a54);
+  background-size: 300% 300%;
   animation: gradientFlow 25s ease infinite;
   will-change: background;
 }
@@ -203,10 +203,24 @@ body.fonts-loading {
   height: 3.2rem;
   z-index: 1000;
   overflow: hidden;
+  color: white;
   background: transparent;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: height 0.3s ease, background-color 0.3s ease;
+}
+.header.on-light {
+  background-color: #fff;
+  color: #000;
+}
+.header.on-light .logo,
+.header.on-light .phone,
+.header.on-light .menu-icon,
+.header.on-light .dropdown-menu a {
+  color: #000 !important;
+}
+.header.on-light .menu-icon {
+  background: #000;
 }
 .header .header-top {
   display: flex;
@@ -1420,6 +1434,7 @@ body.fonts-loading {
 }
 .main .footer-section {
   height: 100dvh;
+  position: relative;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;

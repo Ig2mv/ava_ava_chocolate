@@ -90,8 +90,22 @@
     height: 3.2rem;
     z-index: 1000;
     overflow: hidden;
+    color: white;
     @include blurred;
     transition: height 0.3s ease, background-color 0.3s ease;
+    &.on-light {
+        background-color: #fff;
+        color: #000;
+        .logo,
+        .phone,
+        .menu-icon,
+        .dropdown-menu a {
+            color: #000 !important;
+        }
+        .menu-icon {
+            background: #000;
+        }
+    }
     .header-top {
         display: flex;
         align-items: center;
@@ -945,6 +959,7 @@
     //* FooterSection
     .footer-section {
         height: 100dvh;
+        position: relative;
         scroll-snap-align: start;
         display: flex;
         flex-direction: column;
@@ -1078,9 +1093,6 @@
         }
     }
 }
-
-
-
 
 
 //? ========== Модальное окно корзины ===========

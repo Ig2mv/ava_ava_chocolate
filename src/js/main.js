@@ -717,4 +717,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
+document.addEventListener('DOMContentLoaded', () => {
+  // Хедер меняет цвет на белом фоне (например, в футере)
+  const header = document.querySelector('.header');
+  const footer = document.querySelector('#footer');
+  if (header && footer) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          header.classList.add('on-light');
+        } else {
+            header.classList.remove('on-light');
+        }
+      });
+    }, { threshold: 0.2 });
+    observer.observe(footer);
+  }
+});
