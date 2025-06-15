@@ -136,7 +136,7 @@
                     margin-top: clamp(2.5rem, 1.9024rem + 3.4146vw, 6rem);
                     pointer-events: none;
                     filter: brightness(0) invert(1);
-                    transition: opacity 0.5s ease;
+                    transition: opacity 0.3s ease;
                     &.logo-visible {
                         opacity: 1;
                         pointer-events: auto;
@@ -151,7 +151,7 @@
                     pointer-events: none;
                     padding: clamp(2.3rem, 1.839rem + 2.6341vw, 5rem) 0;
                     color: white;
-                    transition: opacity 0.5s ease;
+                    transition: opacity 0.3s ease;
                     &.logo-visible {
                         opacity: 1;
                         pointer-events: auto;
@@ -387,8 +387,7 @@
         justify-content: flex-end;
         scroll-snap-align: start;
         .hero-content {
-            display: flex;
-            flex-direction: column;
+            position: relative;
             padding: clamp(1rem, 0.6585rem + 1.9512vw, 3rem);
             @media (max-width: 768px) { margin-bottom: 5rem; }
             .hero-text {
@@ -763,6 +762,9 @@
                     flex-direction: column;
                     width: 100%;
                     overflow-x: auto;
+                    max-height: 100%;
+                    overflow-y: hidden;
+                    -webkit-overflow-scrolling: touch;
                     padding: 0.7rem 0.5rem;
                     @media (max-width: 768px) { overflow-y: hidden; }
                     .reviews-items-container {

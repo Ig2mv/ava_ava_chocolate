@@ -12,7 +12,7 @@ document.fonts.ready.then(() => {
 });
 
 
-//* Preloader
+// //* Preloader
 document.addEventListener('DOMContentLoaded', () => {
     const loadingTextSpan = document.querySelector('.loading-text');
     const dots = document.querySelectorAll('.dot');

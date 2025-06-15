@@ -79,7 +79,7 @@ ul, ol {
     list-style: none;
 }
 
-// Для скринридеров, которыми пользуются люди с нарушениями зрения
+// Для скринридеров
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -89,7 +89,6 @@ ul, ol {
     clip-path: inset(50%);
 }
 
-// Убираем черную обводку
 *:focus {
     outline: none;
 }
