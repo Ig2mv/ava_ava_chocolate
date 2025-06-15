@@ -14,28 +14,8 @@ document.fonts.ready.then(() => {
 
 //* Preloader
 document.addEventListener('DOMContentLoaded', () => {
-    const titleLines = document.querySelectorAll('.title-line');
     const loadingTextSpan = document.querySelector('.loading-text');
     const dots = document.querySelectorAll('.dot');
-    // === Анимация заголовков (AVA CHOCOLATE, DESIGN) ===
-    titleLines.forEach((line, lineIndex) => {
-        const text = line.getAttribute('data-text');
-        line.innerHTML = '';
-        [...text].forEach((char, i) => {
-            const span = document.createElement('span');
-            span.className = char === ' ' ? 'space' : 'letter';
-            span.textContent = char;
-            span.style.opacity = '0';
-            line.appendChild(span);
-            // Покадровая активация
-            setTimeout(() => {
-                requestAnimationFrame(() => {
-                    span.style.opacity = '1';
-                    span.classList.add('letter-animated');
-                });
-            }, (lineIndex * 1250) + i * 150);
-        });
-    });
     // === Анимация слова "loading" ===
     const loadingText = loadingTextSpan.getAttribute('data-text');
     loadingTextSpan.innerHTML = '';
@@ -94,6 +74,44 @@ document.addEventListener('DOMContentLoaded', () => {
     staggeredElements.forEach(el => observer.observe(el));
 });
 
+//! HeaderLogo
+document.addEventListener('DOMContentLoaded', () => {
+    // === Переключение цвета хедера (на светлых секциях, например, футере) ===
+    const header = document.querySelector('.header');
+    const footer = document.querySelector('#footer');
+    if (header && footer) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    header.classList.add('on-light');
+                } else {
+                    header.classList.remove('on-light');
+                }
+            });
+        }, { threshold: 0.2 });
+        observer.observe(footer);
+    }
+    // === Переключение логотипа (картинка на hero, текст на других секциях) ===
+    const logoImg = document.querySelector('.logo-switch-img');
+    const logoText = document.querySelector('.logo-switch-text');
+    const hero = document.querySelector('#hero');
+    if (logoImg && logoText && hero) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // hero в зоне — показать логотип-картинку
+                    logoImg.classList.add('logo-visible');
+                    logoText.classList.remove('logo-visible');
+                } else {
+                    // не hero — показать текст
+                    logoImg.classList.remove('logo-visible');
+                    logoText.classList.add('logo-visible');
+                }
+            });
+        }, { threshold: 0.6 });
+        observer.observe(hero);
+    }
+});
 
 //! MenuToggle
 document.addEventListener('DOMContentLoaded', () => {
@@ -720,22 +738,4 @@ document.addEventListener('DOMContentLoaded', () => {
       cart.classList.remove('visible');
     }
   });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Хедер меняет цвет на белом фоне (например, в футере)
-  const header = document.querySelector('.header');
-  const footer = document.querySelector('#footer');
-  if (header && footer) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          header.classList.add('on-light');
-        } else {
-            header.classList.remove('on-light');
-        }
-      });
-    }, { threshold: 0.2 });
-    observer.observe(footer);
-  }
 });
