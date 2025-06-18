@@ -25,7 +25,7 @@
     </div>
 
     <!-- Header -->
-    <header class="header">
+    <header class="header first-section">
         <div class="header-top">
             <div class="header-left">
                 <div class="staggered staggered-1">
@@ -343,8 +343,14 @@
                         <h2 class="footer-title">ОСТАВИТЬ ЗАПРОС</h2>
                         <form class="footer-form">
                             <div class="footer-form-row">
-                                <input type="text" placeholder="Имя*" required>
-                                <input type="tel" placeholder="Телефон*" required>
+                                <div class="input-wrapper name-wrapper">
+                                    <input type="text" placeholder="Имя*" required>
+                                    <span class="footer-status"></span>
+                                </div>
+                                <div class="input-wrapper phone-wrapper">
+                                    <input type="tel" placeholder="Телефон*" required>
+                                    <span class="footer-status"></span>
+                                </div>
                             </div>
                             <textarea placeholder="Комментарий*" maxlength="500" required></textarea>
                             <div class="footer-form-bottom">

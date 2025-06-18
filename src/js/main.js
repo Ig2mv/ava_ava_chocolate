@@ -74,11 +74,15 @@ document.addEventListener('DOMContentLoaded', () => {
     staggeredElements.forEach(el => observer.observe(el));
 });
 
+
 //! HeaderLogo
 document.addEventListener('DOMContentLoaded', () => {
-    // === Переключение цвета хедера (на светлых секциях, например, футере) ===
     const header = document.querySelector('.header');
     const footer = document.querySelector('#footer');
+    const logoImg = document.querySelector('.logo-switch-img');
+    const logoText = document.querySelector('.logo-switch-text');
+    const hero = document.querySelector('#hero');
+    // === Переключение цвета хедера (на светлых секциях, например, футере) ===
     if (header && footer) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -91,21 +95,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { threshold: 0.2 });
         observer.observe(footer);
     }
-    // === Переключение логотипа (картинка на hero, текст на других секциях) ===
-    const logoImg = document.querySelector('.logo-switch-img');
-    const logoText = document.querySelector('.logo-switch-text');
-    const hero = document.querySelector('#hero');
-    if (logoImg && logoText && hero) {
+    // === Управление логотипом и отображением бургер-меню ===
+    if (logoImg && logoText && hero && header) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // hero в зоне — показать логотип-картинку
+                const isHero = entry.isIntersecting;
+                // Всегда: показываем логотип-картинку в hero
+                if (isHero) {
                     logoImg.classList.add('logo-visible');
                     logoText.classList.remove('logo-visible');
                 } else {
-                    // не hero — показать текст
                     logoImg.classList.remove('logo-visible');
                     logoText.classList.add('logo-visible');
+                }
+                // Управление first-section (для скрытия меню-гамбургера на десктопе)
+                if (window.innerWidth > 768) {
+                    if (isHero) {
+                        header.classList.add('first-section');
+                    } else {
+                        header.classList.remove('first-section');
+                    }
+                } else {
+                    // На мобилке гамбургер должен быть всегда
+                    header.classList.remove('first-section');
                 }
             });
         }, { threshold: 0.6 });
@@ -125,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const isOpening = !header.classList.contains('mobile-open');
     // Меняем наличие класса mobile-open
     header.classList.toggle('mobile-open');
+    // Удаляем first-section, чтобы меню-гамбургер был всегда видим
+    header.classList.remove('first-section');
     // Когда меню открыто, нужно запретить прокрутку фона
     // При закрытии меню — возвращаем overflow, снимаем блокировку
     if (isOpening) {
@@ -474,6 +488,125 @@ document.addEventListener('DOMContentLoaded', () => {
       showSuccessMessage('Отзыв отправлен 🎉');
     }
   });
+});
+
+//! FooterFormValidation
+document.addEventListener('DOMContentLoaded', () => {
+    // Получаем элементы формы
+    const form = document.querySelector('.footer-form');
+    const nameInput = form.querySelector('.name-wrapper input');
+    const nameStatus = form.querySelector('.name-wrapper .footer-status');
+    const phoneInput = form.querySelector('.phone-wrapper input');
+    const phoneStatus = form.querySelector('.phone-wrapper .footer-status');
+    const messageInput = form.querySelector('textarea');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    // === Ограничение длины комментария ===
+    messageInput.addEventListener('input', () => {
+        const max = 500;
+        if (messageInput.value.length > max) {
+            messageInput.value = messageInput.value.slice(0, max);
+            messageInput.classList.add('overlimit');
+            clearTimeout(messageInput._limitTimeout);
+            messageInput._limitTimeout = setTimeout(() => {
+                messageInput.classList.remove('overlimit');
+            }, 300);
+        }
+        messageInput.classList.remove('error'); // снимаем ошибку при вводе
+    });
+    // === Валидация имени ===
+    nameInput.addEventListener('input', () => {
+        let value = nameInput.value;
+        value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\\s]/g, ''); // только буквы и пробел
+        const parts = value.trimStart().split(' ');
+        value = parts.slice(0, 2).join(' ');
+        if (value.length > 15) value = value.slice(0, 15);
+        nameInput.value = value;
+        const spaceCount = (value.match(/\s/g) || []).length;
+        if (value.length >= 3 && value.length <= 15 && spaceCount <= 1) {
+            nameStatus.textContent = '+';
+            nameStatus.classList.add('valid');
+            nameStatus.classList.remove('error');
+        } else {
+            nameStatus.textContent = '–';
+            nameStatus.classList.add('error');
+            nameStatus.classList.remove('valid');
+        }
+        nameInput.classList.remove('error');
+    });
+    // === Телефон: автоформат и валидация ===
+    phoneInput.addEventListener('focus', () => {
+        if (!phoneInput.value.startsWith('+994')) {
+            phoneInput.value = '+994';
+        }
+    });
+    phoneInput.addEventListener('input', () => {
+        let digits = phoneInput.value.replace(/\D/g, '');
+        if (!digits.startsWith('994')) digits = '994';
+        digits = digits.slice(0, 12);
+        phoneInput.value = '+' + digits;
+        if (digits.length === 12) {
+            phoneStatus.textContent = '+';
+            phoneStatus.classList.add('valid');
+            phoneStatus.classList.remove('error');
+        } else {
+            phoneStatus.textContent = '–';
+            phoneStatus.classList.add('error');
+            phoneStatus.classList.remove('valid');
+        }
+        phoneInput.classList.remove('error');
+    });
+    // === Вибрация поля при ошибке ===
+    function shakeField(field) {
+        field.classList.add('error');
+        field.classList.add('shake');
+        setTimeout(() => {
+            field.classList.remove('shake');
+        }, 400);
+    }
+    // === Показываем "Успешно 🎉" в кнопке ===
+    function showSuccessMessage(text) {
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = text;
+        submitBtn.classList.add('success');
+        setTimeout(() => {
+            submitBtn.textContent = originalText;
+            submitBtn.classList.remove('success');
+        }, 3000);
+    }
+    // === Обработка отправки формы ===
+    form.addEventListener('submit', (e) => {
+        e.preventDefault(); // отключаем стандартную отправку
+        const name = nameInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const message = messageInput.value.trim();
+        const digits = phone.replace(/\D/g, '');
+        const spaceCount = (name.match(/\s/g) || []).length;
+        let hasError = false;
+        // Проверки
+        if (!name || name.length < 3 || name.length > 15 || spaceCount > 1) {
+            shakeField(nameInput);
+            hasError = true;
+        }
+        if (digits.length !== 12 || !digits.startsWith('994')) {
+            shakeField(phoneInput);
+            hasError = true;
+        }
+        if (!message) {
+            shakeField(messageInput);
+            hasError = true;
+        }
+        // Успешная отправка
+        if (!hasError) {
+            nameInput.value = '';
+            phoneInput.value = '';
+            messageInput.value = '';
+            nameStatus.textContent = '';
+            phoneStatus.textContent = '';
+            nameStatus.classList.remove('valid', 'error');
+            phoneStatus.classList.remove('valid', 'error');
+            showSuccessMessage('Успешно 🎉');
+        }
+    });
 });
 
 //! CartLogic

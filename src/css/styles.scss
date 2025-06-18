@@ -80,8 +80,11 @@
     z-index: 1000;
     overflow: visible;
     color: white;
-    @include blurred;
+    background: transparent;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     transition: height 0.3s ease, background-color 0.3s ease;
+    @media (max-width: 768px) { backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); }
     &.on-light {
         background-color: #fff;
         color: #000;
@@ -98,14 +101,27 @@
         .dropdown-menu a {
             color: #000 !important;
         }
-            .header-top .header-left .menu-toggle .menu-icon {
+        .header-top .header-left .menu-toggle .menu-icon {
+            background: #000;
+            &::before, &::after {
                 background: #000;
-                &::before, &::after {
-                    background: #000;
-                }
-                &::before { top: -0.5rem; ; }
-                &::after { top: 0.5rem; ; }
             }
+            &::before { top: -0.5rem; ; }
+            &::after { top: 0.5rem; ; }
+        }
+    }
+    &.first-section {
+        @media (min-width: 769px) {
+            .menu-toggle {
+                opacity: 0 !important;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+                @at-root .header.first-section:hover .menu-toggle {
+                    opacity: 1 !important;
+                    pointer-events: auto;
+                }
+            }
+        }
     }
     .header-top {
         display: flex;
@@ -118,7 +134,7 @@
             z-index: 1001;
             display: flex;
             align-items: center;
-            gap: clamp(1rem, 0.8293rem + 0.9756vw, 2rem);
+            gap: 4rem;
             @media (max-width: 768px) { flex: 1; justify-content: space-between; }
             .logo-img-link {
                 position: relative;
@@ -160,12 +176,8 @@
                 }
             }
             .menu-toggle {
-                display: none;
                 width: 2.5rem;
                 height: 2.5rem;
-                @media (max-width: 768px) {
-                    display: block;
-                }
                 .menu-icon {
                     position: relative;
                     pointer-events: none;
@@ -299,15 +311,14 @@
     }
     &:hover {
         @media (min-width: 769px) {
-            height: 6.4rem; 
-            .logo-img {
-                opacity: 0;
-            }
+            height: 12rem; 
             .dropdown-container {
                 transform: translateY(0); 
                 opacity: 1;
             }
-            
+            .header-top .header-left .menu-toggle .menu-icon {
+                opacity: 0;
+            }
         }
     }
     @media (max-width: 768px) {
@@ -337,13 +348,11 @@
                     }
                 }
             }
-            &.mobile-open {
-                .logo-img {
-                    filter: none !important;
-                }
-                .logo-switch-text {
-                    color: #000 !important;
-                }
+            .logo-img {
+                filter: none !important;
+            }
+            .logo-switch-text {
+                color: #000 !important;
             }
         }
         &:not(.mobile-open) { 
@@ -364,6 +373,12 @@
                 &::before { top: -0.5rem; }
                 &::after { top: 0.5rem; }
             }
+        }
+    }
+    @media (max-width: 768px) {
+        .header.first-section .menu-toggle {
+            opacity: 1 !important;
+            pointer-events: auto !important;
         }
     }
 }
@@ -1129,6 +1144,65 @@
                 }
             }
         }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            input {
+                flex: 1;
+            }
+            .footer-status {
+                position: absolute;
+                right: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
+                font-weight: bold;
+                font-size: 1.2rem;
+                transition: color 0.3s;
+                &.valid {
+                    color: #4caf50;
+                }
+                &.error {
+                    color: #e63946;
+                }
+            }
+        }
+        .footer-form button {
+            border: 1px solid #000;
+            padding: 0.6rem 2rem;
+            border-radius: 2rem;
+            min-width: 11rem;
+            text-align: center;
+            cursor: pointer;
+            font-size: clamp(1rem, 0.6667rem + 0.6944vw, 1.5rem);
+            transition: background 0.3s ease, color 0.3s ease;
+            &:hover {
+                background: #000;
+                color: #fff;
+            }
+            &.success {
+                background-color: #4caf50;
+                color: #fff;
+                border: none !important;
+            }
+        }
+        .footer-form input.error,
+        .footer-form textarea.error {
+            border: 1px solid #e63946 !important;
+            background-color: #fff0f0 !important;
+            transition: border 0.3s, background-color 0.3s;
+        }
+        .footer-form input.shake,
+        .footer-form textarea.shake {
+            animation: shake 0.3s ease;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            50% { transform: translateX(4px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0); }
+        }
     }
     @media (max-width: 768px) {
         .footer-container {
@@ -1468,15 +1542,6 @@
     object-fit: contain;
 }
 
-// * Audio Toggle
-.audio-toggle {
-    right: 2rem;
-    pointer-events: auto;
-    @media (max-width: 768px) {
-        right: 1.5rem;
-    }
-}
-
 // * Cart Toggle
 .cart-toggle {
     right: 6rem;
@@ -1498,8 +1563,20 @@
         align-items: center;
         justify-content: center;
         background: rgba(255, 100, 100, 0.9);
+        color: white;
         font-weight: 100;
         @include ultra;
+        z-index: 2;
+        filter: none !important;
+    }
+}
+
+// * Audio Toggle
+.audio-toggle {
+    right: 2rem;
+    pointer-events: auto;
+    @media (max-width: 768px) {
+        right: 1.5rem;
     }
 }
 
@@ -1517,4 +1594,17 @@
         justify-content: center;
         animation: bounceY 1.6s ease-in-out infinite;
     }
+}
+
+// * Белые иконки
+.cart-icon, .audio-icon, .touchpad-icon {
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+}
+
+// * Черные иконки
+.header.on-light ~ .cart-toggle .cart-icon,
+.header.on-light ~ .audio-toggle .audio-icon,
+.header.on-light ~ .touchpad-toggle .touchpad-icon {
+    filter: brightness(0);
 }
