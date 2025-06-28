@@ -3,7 +3,7 @@
 
 //? Скролл к началу страницы при перезагрузке
 window.addEventListener('beforeunload', () => {
-    window.scrollTo(0, 0);
+  window.scrollTo(0, 0);
 });
 
 //?FontsLoading
@@ -14,144 +14,174 @@ document.fonts.ready.then(() => {
 
 // //* Preloader
 document.addEventListener('DOMContentLoaded', () => {
-    const loadingTextSpan = document.querySelector('.loading-text');
-    const dots = document.querySelectorAll('.dot');
-    // === Анимация слова "loading" ===
-    const loadingText = loadingTextSpan.getAttribute('data-text');
-    loadingTextSpan.innerHTML = '';
-    [...loadingText].forEach((char, i) => {
-        const span = document.createElement('span');
-        span.className = 'letter';
-        span.textContent = char;
-        span.style.opacity = '0';
-        loadingTextSpan.appendChild(span);
-        setTimeout(() => {
-            requestAnimationFrame(() => {
-                span.style.opacity = '1';
-                span.classList.add('letter-animated');
-            });
-        }, 2000 + i * 150);
-    });
-    // === Анимация точек ===
-    dots.forEach((dot, i) => {
-        dot.style.opacity = '0';
-        setTimeout(() => {
-            requestAnimationFrame(() => {
-                dot.style.opacity = '1';
-                dot.classList.add('dot-animated');
-            });
-        }, 3200 + i * 200);
-    });
-    // === Скрытие прелодера ===
+  const loadingTextSpan = document.querySelector('.loading-text');
+  const dots = document.querySelectorAll('.dot');
+  // Анимация слова "loading"
+  const loadingText = loadingTextSpan.getAttribute('data-text');
+  loadingTextSpan.innerHTML = '';
+  [...loadingText].forEach((char, i) => {
+    const span = document.createElement('span');
+    span.className = 'letter';
+    span.textContent = char;
+    span.style.opacity = '0';
+    loadingTextSpan.appendChild(span);
     setTimeout(() => {
-        const preloader = document.querySelector('.preloader');
-        preloader.style.transition = 'opacity 2s ease';
-        preloader.style.opacity = '0';
-        setTimeout(() => {
-            preloader.style.display = 'none';
-        }, 2000);
-    }, 5000);
+      requestAnimationFrame(() => {
+        span.style.opacity = '1';
+        span.classList.add('letter-animated');
+      });
+    }, 2000 + i * 150);
+  });
+  // Анимация точек
+  dots.forEach((dot, i) => {
+    dot.style.opacity = '0';
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        dot.style.opacity = '1';
+        dot.classList.add('dot-animated');
+      });
+    }, 3200 + i * 200);
+  });
+  // Скрытие прелодера
+  setTimeout(() => {
+    const preloader = document.querySelector('.preloader');
+    preloader.style.transition = 'opacity 2s ease';
+    preloader.style.opacity = '0';
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 2000);
+  }, 5000);
 });
 
 // * Активация staggered-анимаций
 document.addEventListener('DOMContentLoaded', () => {
-    // === 1. Анимация header и hero ===
-    document.querySelector('header')?.classList.add('animate');
-    document.querySelector('.hero-section')?.classList.add('animate');
-    // === 2. Анимация UI-элементов
-    document.querySelectorAll('.cart-toggle, .audio-toggle, .touchpad-toggle')
-        .forEach(el => el.classList.add('animate'));
-    // === 3. Анимация .staggered по скроллу
-    const staggeredElements = document.querySelectorAll('.staggered');
-    const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate');
-                obs.unobserve(entry.target); // если однократно
-            }
-        });
-    }, { threshold: 0.2 }); // чуть выше, чтобы раньше срабатывало
-    staggeredElements.forEach(el => observer.observe(el));
+  // Анимация header и hero
+  document.querySelector('header')?.classList.add('animate');
+  document.querySelector('.hero-section')?.classList.add('animate');
+  // Анимация UI-элементов
+  document.querySelectorAll('.cart-toggle, .audio-toggle, .touchpad-toggle')
+    .forEach(el => el.classList.add('animate'));
+  // Анимация .staggered по скроллу
+  const staggeredElements = document.querySelectorAll('.staggered');
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  staggeredElements.forEach(el => observer.observe(el));
 });
 
 
 //! HeaderLogo
 document.addEventListener('DOMContentLoaded', () => {
-    const header = document.querySelector('.header');
-    const footer = document.querySelector('#footer');
-    const logoImg = document.querySelector('.logo-switch-img');
-    const logoText = document.querySelector('.logo-switch-text');
-    const hero = document.querySelector('#hero');
-    // === Переключение цвета хедера (на светлых секциях, например, футере) ===
-    if (header && footer) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    header.classList.add('on-light');
-                } else {
-                    header.classList.remove('on-light');
-                }
-            });
-        }, { threshold: 0.2 });
-        observer.observe(footer);
-    }
-    // === Управление логотипом и отображением бургер-меню ===
-    if (logoImg && logoText && hero && header) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const isHero = entry.isIntersecting;
-                // Всегда: показываем логотип-картинку в hero
-                if (isHero) {
-                    logoImg.classList.add('logo-visible');
-                    logoText.classList.remove('logo-visible');
-                } else {
-                    logoImg.classList.remove('logo-visible');
-                    logoText.classList.add('logo-visible');
-                }
-                // Управление first-section (для скрытия меню-гамбургера на десктопе)
-                if (window.innerWidth > 768) {
-                    if (isHero) {
-                        header.classList.add('first-section');
-                    } else {
-                        header.classList.remove('first-section');
-                    }
-                } else {
-                    // На мобилке гамбургер должен быть всегда
-                    header.classList.remove('first-section');
-                }
-            });
-        }, { threshold: 0.6 });
-        observer.observe(hero);
-    }
+  const header = document.querySelector('.header');
+  const footer = document.querySelector('#footer');
+  const logoImg = document.querySelector('.logo-switch-img');
+  const logoText = document.querySelector('.logo-switch-text');
+  const hero = document.querySelector('#hero');
+  // Переключение цвета хедера (на светлых секциях, например, футере)
+  if (header && footer) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          header.classList.add('on-light');
+        } else {
+          header.classList.remove('on-light');
+        }
+      });
+    }, { threshold: 0.2 });
+    observer.observe(footer);
+  }
+  // Управление логотипом и отображением бургер-меню
+  if (logoImg && logoText && hero && header) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const isHero = entry.isIntersecting;
+        const menuIsOpen = header.classList.contains('mobile-open');
+        // Всегда: показываем логотип-картинку в hero
+        if (isHero || menuIsOpen) {
+          logoImg.classList.add('logo-visible');
+          logoText.classList.remove('logo-visible');
+        } else {
+          logoImg.classList.remove('logo-visible');
+          logoText.classList.add('logo-visible');
+        }
+        // Управление first-section (для скрытия меню-гамбургера на десктопе)
+        if (window.innerWidth > 768) {
+          if (isHero) {
+            header.classList.add('first-section');
+          } else {
+            header.classList.remove('first-section');
+          }
+        } else {
+          // На мобилке гамбургер должен быть всегда
+          header.classList.remove('first-section');
+        }
+      });
+    }, { threshold: 0.6 });
+    observer.observe(hero);
+  }
 });
 
 //! MenuToggle
 document.addEventListener('DOMContentLoaded', () => {
-  // Элементы
+  // Получаем элементы
   const header = document.querySelector('.header');
   const menuToggle = document.querySelector('.menu-toggle');
   const menuLinks = document.querySelectorAll('.dropdown-menu a');
-  // Навешиваем обработчик на клик по бургеру
+  const logoImg = document.querySelector('.logo-switch-img');
+  const logoText = document.querySelector('.logo-switch-text');
+  const hero = document.querySelector('#hero');
+  // Обработка клика по гамбургеру
   menuToggle.addEventListener('click', () => {
-    // Проверяем, открывается ли меню в данный момент
     const isOpening = !header.classList.contains('mobile-open');
-    // Меняем наличие класса mobile-open
+    // Переключаем класс открытия меню
     header.classList.toggle('mobile-open');
-    // Удаляем first-section, чтобы меню-гамбургер был всегда видим
+    // Удаляем first-section, чтобы меню-гамбургер был всегда видно
     header.classList.remove('first-section');
-    // Когда меню открыто, нужно запретить прокрутку фона
-    // При закрытии меню — возвращаем overflow, снимаем блокировку
-    if (isOpening) {
-      document.body.style.overflow = 'hidden';
+    // Блокировка прокрутки при открытом меню
+    document.body.style.overflow = isOpening ? 'hidden' : '';
+    // Обновление логотипа вручную
+    const menuIsOpen = header.classList.contains('mobile-open');
+    if (menuIsOpen) {
+      // Когда меню открыто — всегда показываем логотип-картинку
+      logoImg.classList.add('logo-visible');
+      logoText.classList.remove('logo-visible');
     } else {
-      document.body.style.overflow = '';
+      // Когда меню закрыто — проверяем, видно ли hero-секцию
+      if (hero) {
+        const rect = hero.getBoundingClientRect();
+        const isHeroVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isHeroVisible) {
+          logoImg.classList.add('logo-visible');
+          logoText.classList.remove('logo-visible');
+        } else {
+          logoImg.classList.remove('logo-visible');
+          logoText.classList.add('logo-visible');
+        }
+      }
     }
   });
-  // Если пользователь нажал на любой пункт меню — меню автоматически закрывается и фон снова прокручивается
+  // При клике по пункту меню — закрываем меню и возвращаем прокрутку
   menuLinks.forEach(link => {
     link.addEventListener('click', () => {
       header.classList.remove('mobile-open');
       document.body.style.overflow = '';
+      // После закрытия меню — восстанавливаем логотип по hero-секции
+      if (logoImg && logoText && hero) {
+        const rect = hero.getBoundingClientRect();
+        const isHeroVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isHeroVisible) {
+          logoImg.classList.add('logo-visible');
+          logoText.classList.remove('logo-visible');
+        } else {
+          logoImg.classList.remove('logo-visible');
+          logoText.classList.add('logo-visible');
+        }
+      }
     });
   });
 });
@@ -162,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const audioToggle = document.querySelector('.audio-toggle');
   const audio = document.getElementById('background-audio');
   const audioIcon = audioToggle.querySelector('.audio-icon');
-
   // Управление музыкой
   audioToggle.addEventListener('click', () => {
     //Если data-audio-state="muted", значит звук выключен, и мы его включим
@@ -183,59 +212,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //! DataFiltrPrice
 document.addEventListener('DOMContentLoaded', () => {
-    // Элементы фильтра и карточек
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const orderItems = document.querySelectorAll('.order-item');
-    let currentFilter = null; // текущая активная кнопка
-    let animationTimeouts = []; // массив для хранения всех таймеров
-    // Навешиваем обработчик на каждую кнопку фильтра
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Если кнопка уже выбрана — ничего не делаем
-            if (button === currentFilter) return;
-            // Обновляем активную кнопку
-            currentFilter = button;
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            // Прокручиваем список товаров в начало
-            const scrollContainer = document.querySelector('.order-scroll-container');
-            if (scrollContainer) scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
-            // Получаем границы фильтра из data-атрибутов
-            const min = parseInt(button.dataset.min);
-            const max = parseInt(button.dataset.max);
-            const delay = 500; // задержка между карточками (волна)
-            // Перед запуском новой анимации — очищаем ВСЕ старые таймеры
-            animationTimeouts.forEach(t => clearTimeout(t));
-            animationTimeouts = [];
-            // Скрываем все неподходящие карточки (сразу)
-            orderItems.forEach(item => {
-                const price = parseInt(item.dataset.price);
-                if (price < min || price > max) {
-                    item.classList.remove('animating'); // сбрасываем анимацию
-                    item.classList.add('hidden');       // скрываем
-                }
-            });
-            // Показываем подходящие карточки с эффектом волны
-            let visibleIndex = 0; // счётчик задержек
-            orderItems.forEach(item => {
-                const price = parseInt(item.dataset.price);
-                if (price >= min && price <= max) {
-                    item.classList.remove('hidden'); // сразу показываем
-                    // Устанавливаем таймер анимации
-                    const timeoutId = setTimeout(() => {
-                        item.classList.remove('animating'); // сброс
-                        void item.offsetWidth;              // перезапуск layout
-                        item.classList.add('animating');    // запуск анимации
-                    }, visibleIndex * delay);
-                    animationTimeouts.push(timeoutId); // сохраняем ID
-                    visibleIndex++;
-                }
-            });
-        });
+  // Элементы фильтра и карточек
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const orderItems = document.querySelectorAll('.order-item');
+  let currentFilter = null; // текущая активная кнопка
+  let animationTimeouts = []; // массив для хранения всех таймеров
+  // Навешиваем обработчик на каждую кнопку фильтра
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Если кнопка уже выбрана — ничего не делаем
+      if (button === currentFilter) return;
+      // Обновляем активную кнопку
+      currentFilter = button;
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      // Прокручиваем список товаров в начало
+      const scrollContainer = document.querySelector('.order-scroll-container');
+      if (scrollContainer) scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+      // Получаем границы фильтра из data-атрибутов
+      const min = parseInt(button.dataset.min);
+      const max = parseInt(button.dataset.max);
+      const delay = 500; // задержка между карточками (волна)
+      // Перед запуском новой анимации — очищаем ВСЕ старые таймеры
+      animationTimeouts.forEach(t => clearTimeout(t));
+      animationTimeouts = [];
+      // Скрываем все неподходящие карточки (сразу)
+      orderItems.forEach(item => {
+        const price = parseInt(item.dataset.price);
+        if (price < min || price > max) {
+          item.classList.remove('animating'); // сбрасываем анимацию
+          item.classList.add('hidden'); // скрываем
+        }
+      });
+      // Показываем подходящие карточки с эффектом волны
+      let visibleIndex = 0; // счётчик задержек
+      orderItems.forEach(item => {
+        const price = parseInt(item.dataset.price);
+        if (price >= min && price <= max) {
+          item.classList.remove('hidden'); // сразу показываем
+          // Устанавливаем таймер анимации
+          const timeoutId = setTimeout(() => {
+            item.classList.remove('animating'); // сброс
+            void item.offsetWidth; // перезапуск layout
+            item.classList.add('animating'); // запуск анимации
+          }, visibleIndex * delay);
+          animationTimeouts.push(timeoutId); // сохраняем ID
+          visibleIndex++;
+        }
+      });
     });
-    // При загрузке страницы: автоматически нажимаем на первую кнопку (S)
-    const defaultBtn = document.querySelector('.filter-btn[data-min="0"]');
-    if (defaultBtn) defaultBtn.click();
+  });
+  // При загрузке страницы: автоматически нажимаем на первую кнопку (S)
+  const defaultBtn = document.querySelector('.filter-btn[data-min="0"]');
+  if (defaultBtn) defaultBtn.click();
 });
 
 //! MainImg
@@ -346,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.classList.remove('hidden');
     }, 3000);
   }
-  // === Функция показа успешного сообщения ===
+  // Функция показа успешного сообщения
   function showSuccessMessage(message) {
     successBox.textContent = message;
     successBox.classList.add('visible');
@@ -358,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.classList.remove('hidden');
     }, 3000);
   }
-  // === Валидация имени ===
+  // Валидация имени
   nameInput.addEventListener('input', () => {
     let value = nameInput.value;
     value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\s]/g, ''); // Удаляем все символы, кроме букв и пробелов
@@ -379,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
       nameStatus.classList.remove('valid');
     }
   });
-  // === Валидация телефона ===
+  // Валидация телефона
   phoneInput.addEventListener('focus', () => {
     if (!phoneInput.value.startsWith('+994')) {
       phoneInput.value = '+994'; // Автозаполнение при фокусе
@@ -402,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
       phoneStatus.classList.remove('valid');
     }
   });
-  // === Отправка отзыва ===
+  // Отправка отзыва
   submitBtn.addEventListener('click', () => {
     // Получаем элементы
     const name = nameInput.value.trim();
@@ -500,6 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneStatus = form.querySelector('.phone-wrapper .footer-status');
     const messageInput = form.querySelector('textarea');
     const submitBtn = form.querySelector('button[type="submit"]');
+
     // === Ограничение длины комментария ===
     messageInput.addEventListener('input', () => {
         const max = 500;
@@ -511,15 +541,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 messageInput.classList.remove('overlimit');
             }, 300);
         }
-        messageInput.classList.remove('error'); // снимаем ошибку при вводе
+        messageInput.classList.remove('error');
     });
+
     // === Валидация имени ===
     nameInput.addEventListener('input', () => {
         let value = nameInput.value;
-        value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\\s]/g, ''); // только буквы и пробел
-        const parts = value.trimStart().split(' ');
-        value = parts.slice(0, 2).join(' ');
-        if (value.length > 15) value = value.slice(0, 15);
+        value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\s]/g, ''); // только буквы и пробел
+        const parts = value.trimStart().split(' '); // разбиваем по пробелам
+        value = parts.slice(0, 2).join(' '); // максимум имя + фамилия
+        if (value.length > 15) value = value.slice(0, 15); // максимум 15 символов
         nameInput.value = value;
         const spaceCount = (value.match(/\s/g) || []).length;
         if (value.length >= 3 && value.length <= 15 && spaceCount <= 1) {
@@ -533,6 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         nameInput.classList.remove('error');
     });
+
     // === Телефон: автоформат и валидация ===
     phoneInput.addEventListener('focus', () => {
         if (!phoneInput.value.startsWith('+994')) {
@@ -555,7 +587,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         phoneInput.classList.remove('error');
     });
-    // === Вибрация поля при ошибке ===
+
+    // === Вибрация при ошибке ===
     function shakeField(field) {
         field.classList.add('error');
         field.classList.add('shake');
@@ -563,6 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
             field.classList.remove('shake');
         }, 400);
     }
+
     // === Показываем "Успешно 🎉" в кнопке ===
     function showSuccessMessage(text) {
         const originalText = submitBtn.textContent;
@@ -573,6 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.classList.remove('success');
         }, 3000);
     }
+
     // === Обработка отправки формы ===
     form.addEventListener('submit', (e) => {
         e.preventDefault(); // отключаем стандартную отправку
@@ -581,20 +616,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const message = messageInput.value.trim();
         const digits = phone.replace(/\D/g, '');
         const spaceCount = (name.match(/\s/g) || []).length;
+
         let hasError = false;
-        // Проверки
+
         if (!name || name.length < 3 || name.length > 15 || spaceCount > 1) {
             shakeField(nameInput);
             hasError = true;
         }
+
         if (digits.length !== 12 || !digits.startsWith('994')) {
             shakeField(phoneInput);
             hasError = true;
         }
+
         if (!message) {
             shakeField(messageInput);
             hasError = true;
         }
+
         // Успешная отправка
         if (!hasError) {
             nameInput.value = '';
@@ -604,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
             phoneStatus.textContent = '';
             nameStatus.classList.remove('valid', 'error');
             phoneStatus.classList.remove('valid', 'error');
-            showSuccessMessage('Успешно 🎉');
+            showSuccessMessage('Принятно');
         }
     });
 });
@@ -871,4 +910,22 @@ document.addEventListener('DOMContentLoaded', () => {
       cart.classList.remove('visible');
     }
   });
+});
+
+//! CartToggleHideOnFooter
+document.addEventListener('DOMContentLoaded', () => {
+  const cartToggle = document.querySelector('.cart-toggle');
+  const footer = document.querySelector('.footer-section');
+  if (cartToggle && footer) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          cartToggle.classList.add('hidden-in-footer');
+        } else {
+          cartToggle.classList.remove('hidden-in-footer');
+        }
+      });
+    }, { threshold: 0.2 }); // можно увеличить до 0.4 для чуть более позднего срабатывания
+    observer.observe(footer);
+  }
 });
