@@ -11,7 +11,6 @@ document.fonts.ready.then(() => {
   document.body.classList.remove('fonts-loading');
 });
 
-
 // //* Preloader
 document.addEventListener('DOMContentLoaded', () => {
   const loadingTextSpan = document.querySelector('.loading-text');
@@ -42,15 +41,24 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, 3200 + i * 200);
   });
-  // Скрытие прелодера
+  // Скрытие прелодера и запуск видео после него
   setTimeout(() => {
     const preloader = document.querySelector('.preloader');
+    const heroVideo = document.querySelector('.hero-video');
+    // Плавно скрываем прелоадер
     preloader.style.transition = 'opacity 2s ease';
     preloader.style.opacity = '0';
     setTimeout(() => {
       preloader.style.display = 'none';
-    }, 2000);
-  }, 5000);
+      // Дожидаемся полной загрузки видео, чтобы не было розового фона
+      if (heroVideo) {
+        heroVideo.currentTime = 0;
+        // ⏳ Только когда данные загружены — запускаем
+        heroVideo.play().catch(() => {});
+        heroVideo.classList.add('visible');
+      }
+    }, 2000); // конец исчезновения прелоадера
+  }, 5000); // длительность прелоадера
 });
 
 // * Активация staggered-анимаций
