@@ -194,6 +194,33 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+//! HeroVideo
+document.addEventListener('DOMContentLoaded', () => {
+  const heroVideo = document.querySelector('.hero-video');
+  if (heroVideo) {
+    // Автовоспроизведение при возврате на вкладку
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        heroVideo.play().catch(() => {});
+      }
+    });
+    // Проверка зависания видео (например, после сворачивания окна)
+    let lastTime = 0;
+    function checkVideoStuck() {
+      if (!heroVideo.paused && !heroVideo.ended) {
+        const currentTime = heroVideo.currentTime;
+        // Если видео застывает (время не движется)
+        if (Math.abs(currentTime - lastTime) < 0.01) {
+          heroVideo.play().catch(() => {});
+        }
+        lastTime = currentTime;
+      }
+      requestAnimationFrame(checkVideoStuck);
+    }
+    requestAnimationFrame(checkVideoStuck);
+  }
+});
+
 //! AudioBackground
 document.addEventListener('DOMContentLoaded', () => {
   // Элементы
@@ -236,7 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
       button.classList.add('active');
       // Прокручиваем список товаров в начало
       const scrollContainer = document.querySelector('.order-scroll-container');
-      if (scrollContainer) scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+      if (scrollContainer) {
+      }
       // Получаем границы фильтра из data-атрибутов
       const min = parseInt(button.dataset.min);
       const max = parseInt(button.dataset.max);
@@ -252,6 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
           item.classList.add('hidden'); // скрываем
         }
       });
+      // Сразу сбрасываем скролл перед показом новых карточек
+      if (scrollContainer) {
+        requestAnimationFrame(() => {
+          scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+        });
+      }
       // Показываем подходящие карточки с эффектом волны
       let visibleIndex = 0; // счётчик задержек
       orderItems.forEach(item => {
@@ -260,9 +294,9 @@ document.addEventListener('DOMContentLoaded', () => {
           item.classList.remove('hidden'); // сразу показываем
           // Устанавливаем таймер анимации
           const timeoutId = setTimeout(() => {
-            item.classList.remove('animating'); // сброс
-            void item.offsetWidth; // перезапуск layout
-            item.classList.add('animating'); // запуск анимации
+            item.classList.remove('animating');
+            void item.offsetWidth;
+            item.classList.add('animating');
           }, visibleIndex * delay);
           animationTimeouts.push(timeoutId); // сохраняем ID
           visibleIndex++;
@@ -738,7 +772,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ?.replace(/^url\(["']?/, '')
         ?.replace(/["']?\)$/, '');
       // Проверка на существование
-      const existing = cartItems.find(el => el.title === title);
+      const existing = cartItems.find(el => el.title === title && el.image === image);
       // Проверяем, есть ли уже такой товар в корзине
       if (existing) {
         existing.quantity += 1;
@@ -895,9 +929,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     // Собираем текст
-    const message = cartItems.map(item =>
-      `• ${item.title} — ${item.quantity} шт. (${item.price * item.quantity} ₼)`
-    ).join('%0A');
+    const message = cartItems.map(item => {
+      const imageName = item.image?.split('/').pop().split('.')[0]; // например "S-1"
+      const titleWithId = `${item.title} [${imageName}]`;
+      return `• ${titleWithId} — ${item.quantity} шт. (${item.price * item.quantity} ₼)`;
+    }).join('%0A');
     const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const fullMessage = `Здравствуйте! Я хочу заказать:%0A${message}%0A%0AОбщая сумма: ${total} ₼`;
     window.open(`https://wa.me/994709690901?text=${fullMessage}`, '_blank');
@@ -933,7 +969,7 @@ document.addEventListener('DOMContentLoaded', () => {
           cartToggle.classList.remove('hidden-in-footer');
         }
       });
-    }, { threshold: 0.2 }); // можно увеличить до 0.4 для чуть более позднего срабатывания
+    }, { threshold: 0.2 });
     observer.observe(footer);
   }
 });
