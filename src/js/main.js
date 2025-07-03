@@ -309,24 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (defaultBtn) defaultBtn.click();
 });
 
-//! MainImg
-document.addEventListener('DOMContentLoaded', () => {
-  // Элементы
-  const thumbs = document.querySelectorAll('.thumb-item');
-  const mainImages = document.querySelectorAll('.main-image');
-  // Переключение галереи
-  thumbs.forEach((thumb, index) => {
-    thumb.addEventListener('click', () => {
-      // Сброс активных классов
-      thumbs.forEach(t => t.classList.remove('active'));
-      mainImages.forEach(img => img.classList.remove('active'));
-      // Назначаем активные элементы
-      thumb.classList.add('active');
-      mainImages[index].classList.add('active');
-    });
-  });
-});
-
 //! TrustBand
 document.addEventListener('DOMContentLoaded', () => {
   // Получаем элементы
