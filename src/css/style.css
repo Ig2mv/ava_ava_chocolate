@@ -1072,6 +1072,32 @@ body.fonts-loading {
     line-height: 1.4;
   }
 }
+.main .about-section .about-content .about-model-wrapper {
+  position: relative;
+  width: 50%;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+.main .about-section .about-content .about-model-wrapper model-viewer {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+}
+.main .about-section .about-content .about-model-wrapper .model-caption {
+  position: absolute;
+  font-size: clamp(1rem, 1rem + (1.5 - 1) * (100vw - 280px) / (1920 - 280), 1.5rem);
+  font-family: "NeueHelvetica", sans-serif;
+  font-weight: 200;
+  letter-spacing: 0.015em;
+  line-height: 1.4;
+  bottom: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.75rem;
+  backdrop-filter: blur(3px);
+}
 .main .reviews-section {
   position: relative;
   height: 100dvh;

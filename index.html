@@ -522,7 +522,21 @@
                     </div>
                 </div>
                 <!-- Правая часть — видео -->
-
+                <div class="about-model-wrapper staggered staggered-49">
+                    <model-viewer
+                        src="src/models/female_statue.glb"
+                        alt="3D модель AVA Chocolate"
+                        auto-rotate
+                        camera-controls
+                        camera-orbit="0deg 75deg auto"
+                        exposure="1.1"
+                        shadow-intensity="1"
+                        autoplay
+                        interaction-prompt="none"
+                        ar
+                    ></model-viewer>
+                    <div class="model-caption">Искусство AVA</div>
+                </div>
             </div>
         </section>
         <!-- ReviewsSection -->
@@ -661,6 +675,8 @@
         <source src="src/audio/button.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Model -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <!-- JS -->
     <script src="src/js/main.js"></script>
 </body>
