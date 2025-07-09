@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         obs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.1 });
   staggeredElements.forEach(el => observer.observe(el));
 });
 
@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="review-date">${now}</span>
           <h3 class="reviews-item-title">Имя: <strong>${safe(name)}</strong></h3>
           <p class="reviews-item-phone">Номер: <strong>${safe(phone)}</strong></p>
-          <p class="reviews-item-desc">Отзыв нашего покупателя: <strong>${safe(message)}</strong></p>
+          <p class="reviews-item-desc">Отзыв: <strong>${safe(message)}</strong></p>
           ${photoURL ? `<img src="${photoURL}" alt="Фото отзыва" class="review-photo-thumb">` : ''}
         </div>
       `;
@@ -544,132 +544,128 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //! FooterFormValidation
+//! FooterFormValidation (переработано)
 document.addEventListener('DOMContentLoaded', () => {
-    // Получаем элементы формы
-    const form = document.querySelector('.footer-form');
-    const nameInput = form.querySelector('.name-wrapper input');
-    const nameStatus = form.querySelector('.name-wrapper .footer-status');
-    const phoneInput = form.querySelector('.phone-wrapper input');
-    const phoneStatus = form.querySelector('.phone-wrapper .footer-status');
-    const messageInput = form.querySelector('textarea');
-    const submitBtn = form.querySelector('button[type="submit"]');
-
-    // === Ограничение длины комментария ===
-    messageInput.addEventListener('input', () => {
-        const max = 500;
-        if (messageInput.value.length > max) {
-            messageInput.value = messageInput.value.slice(0, max);
-            messageInput.classList.add('overlimit');
-            clearTimeout(messageInput._limitTimeout);
-            messageInput._limitTimeout = setTimeout(() => {
-                messageInput.classList.remove('overlimit');
-            }, 300);
-        }
-        messageInput.classList.remove('error');
-    });
-
-    // === Валидация имени ===
-    nameInput.addEventListener('input', () => {
-        let value = nameInput.value;
-        value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\s]/g, ''); // только буквы и пробел
-        const parts = value.trimStart().split(' '); // разбиваем по пробелам
-        value = parts.slice(0, 2).join(' '); // максимум имя + фамилия
-        if (value.length > 15) value = value.slice(0, 15); // максимум 15 символов
-        nameInput.value = value;
-        const spaceCount = (value.match(/\s/g) || []).length;
-        if (value.length >= 3 && value.length <= 15 && spaceCount <= 1) {
-            nameStatus.textContent = '+';
-            nameStatus.classList.add('valid');
-            nameStatus.classList.remove('error');
-        } else {
-            nameStatus.textContent = '–';
-            nameStatus.classList.add('error');
-            nameStatus.classList.remove('valid');
-        }
-        nameInput.classList.remove('error');
-    });
-
-    // === Телефон: автоформат и валидация ===
-    phoneInput.addEventListener('focus', () => {
-        if (!phoneInput.value.startsWith('+994')) {
-            phoneInput.value = '+994';
-        }
-    });
-    phoneInput.addEventListener('input', () => {
-        let digits = phoneInput.value.replace(/\D/g, '');
-        if (!digits.startsWith('994')) digits = '994';
-        digits = digits.slice(0, 12);
-        phoneInput.value = '+' + digits;
-        if (digits.length === 12) {
-            phoneStatus.textContent = '+';
-            phoneStatus.classList.add('valid');
-            phoneStatus.classList.remove('error');
-        } else {
-            phoneStatus.textContent = '–';
-            phoneStatus.classList.add('error');
-            phoneStatus.classList.remove('valid');
-        }
-        phoneInput.classList.remove('error');
-    });
-
-    // === Вибрация при ошибке ===
-    function shakeField(field) {
-        field.classList.add('error');
-        field.classList.add('shake');
-        setTimeout(() => {
-            field.classList.remove('shake');
-        }, 400);
+  const form = document.querySelector('.footer-form');
+  const nameInput = form.querySelector('.name-wrapper input');
+  const nameStatus = form.querySelector('.name-wrapper .footer-status');
+  const phoneInput = form.querySelector('.phone-wrapper input');
+  const phoneStatus = form.querySelector('.phone-wrapper .footer-status');
+  const messageInput = form.querySelector('textarea');
+  const checkbox = form.querySelector('input[type="checkbox"]');
+  const submitBtn = form.querySelector('.footer-submit-btn');
+  const errorBox = form.querySelector('.footer-error-message');
+  const successBox = form.querySelector('.footer-success-message');
+  // === Показываем ошибку ===
+  function showFormError(message, focusElement = null) {
+    errorBox.textContent = message;
+    errorBox.classList.add('visible');
+    submitBtn.classList.add('hidden');
+    if (focusElement) {
+      focusElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      focusElement.focus();
     }
-
-    // === Показываем "Успешно 🎉" в кнопке ===
-    function showSuccessMessage(text) {
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = text;
-        submitBtn.classList.add('success');
-        setTimeout(() => {
-            submitBtn.textContent = originalText;
-            submitBtn.classList.remove('success');
-        }, 3000);
+    clearTimeout(errorBox._timeout);
+    errorBox._timeout = setTimeout(() => {
+      errorBox.classList.remove('visible');
+      submitBtn.classList.remove('hidden');
+    }, 3000);
+  }
+  // === Показываем успешное сообщение ===
+  function showSuccessMessage(message) {
+    successBox.textContent = message;
+    successBox.classList.add('visible');
+    submitBtn.classList.add('hidden');
+    clearTimeout(successBox._timeout);
+    successBox._timeout = setTimeout(() => {
+      successBox.classList.remove('visible');
+      submitBtn.classList.remove('hidden');
+    }, 3000);
+  }
+  // === Ограничение длины комментария ===
+  messageInput.addEventListener('input', () => {
+    const max = 500;
+    if (messageInput.value.length > max) {
+      messageInput.value = messageInput.value.slice(0, max);
+      messageInput.classList.add('overlimit');
+      clearTimeout(messageInput._limitTimeout);
+      messageInput._limitTimeout = setTimeout(() => {
+        messageInput.classList.remove('overlimit');
+      }, 300);
     }
-
-    // === Обработка отправки формы ===
-    form.addEventListener('submit', (e) => {
-        e.preventDefault(); // отключаем стандартную отправку
-        const name = nameInput.value.trim();
-        const phone = phoneInput.value.trim();
-        const message = messageInput.value.trim();
-        const digits = phone.replace(/\D/g, '');
-        const spaceCount = (name.match(/\s/g) || []).length;
-
-        let hasError = false;
-
-        if (!name || name.length < 3 || name.length > 15 || spaceCount > 1) {
-            shakeField(nameInput);
-            hasError = true;
-        }
-
-        if (digits.length !== 12 || !digits.startsWith('994')) {
-            shakeField(phoneInput);
-            hasError = true;
-        }
-
-        if (!message) {
-            shakeField(messageInput);
-            hasError = true;
-        }
-
-        // Успешная отправка
-        if (!hasError) {
-            nameInput.value = '';
-            phoneInput.value = '';
-            messageInput.value = '';
-            nameStatus.textContent = '';
-            phoneStatus.textContent = '';
-            nameStatus.classList.remove('valid', 'error');
-            phoneStatus.classList.remove('valid', 'error');
-            showSuccessMessage('Принятно');
-        }
-    });
+  });
+  // === Валидация имени ===
+  nameInput.addEventListener('input', () => {
+    let value = nameInput.value;
+    value = value.replace(/[^a-zA-Zа-яА-ЯёЁ\s]/g, '');
+    const parts = value.trimStart().split(' ');
+    value = parts.slice(0, 2).join(' ');
+    if (value.length > 15) value = value.slice(0, 15);
+    nameInput.value = value;
+    const spaceCount = (value.match(/\s/g) || []).length;
+    if (value.length >= 3 && value.length <= 15 && spaceCount <= 1) {
+      nameStatus.textContent = '+';
+      nameStatus.classList.add('valid');
+      nameStatus.classList.remove('error');
+    } else {
+      nameStatus.textContent = '–';
+      nameStatus.classList.add('error');
+      nameStatus.classList.remove('valid');
+    }
+  });
+  // === Телефон: автоформат и валидация ===
+  phoneInput.addEventListener('focus', () => {
+    if (!phoneInput.value.startsWith('+994')) {
+      phoneInput.value = '+994';
+    }
+  });
+  phoneInput.addEventListener('input', () => {
+    let digits = phoneInput.value.replace(/\D/g, '');
+    if (!digits.startsWith('994')) digits = '994';
+    digits = digits.slice(0, 12);
+    phoneInput.value = '+' + digits;
+    if (digits.length === 12) {
+      phoneStatus.textContent = '+';
+      phoneStatus.classList.add('valid');
+      phoneStatus.classList.remove('error');
+    } else {
+      phoneStatus.textContent = '–';
+      phoneStatus.classList.add('error');
+      phoneStatus.classList.remove('valid');
+    }
+  });
+  // === Отправка ===
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const message = messageInput.value.trim();
+    const digits = phone.replace(/\D/g, '');
+    const spaceCount = (name.match(/\s/g) || []).length;
+    if (!name || name.length < 3 || name.length > 15 || spaceCount > 1) {
+      showFormError('Введите имя корректно', nameInput);
+      return;
+    }
+    if (digits.length !== 12 || !digits.startsWith('994')) {
+      showFormError('Введите номер телефона', phoneInput);
+      return;
+    }
+    if (!message) {
+      showFormError('Добавьте комментарий', messageInput);
+      return;
+    }
+    if (!checkbox.checked) {
+      showFormError('Подтвердите согласие с условиями', checkbox);
+      return;
+    }
+    // === Успешно 🎉 ===
+    form.reset();
+    nameStatus.textContent = '';
+    phoneStatus.textContent = '';
+    nameStatus.classList.remove('valid', 'error');
+    phoneStatus.classList.remove('valid', 'error');
+    showSuccessMessage('Принятно 🎉');
+  });
 });
 
 //! CartLogic
@@ -746,37 +742,47 @@ document.addEventListener('DOMContentLoaded', () => {
   orderItems.forEach(item => {
     const addBtn = item.querySelector('.order-item-btn');
     addBtn.addEventListener('click', () => {
-      // При клике по кнопке «Добавить»
       const title = item.querySelector('.order-item-title')?.textContent.trim();
       const desc = item.querySelector('.order-item-desc')?.textContent.trim();
       const price = parseInt(item.dataset.price);
-      const image = item.querySelector('.order-item-img')?.style.backgroundImage
-        ?.replace(/^url\(["']?/, '')
-        ?.replace(/["']?\)$/, '');
-      // Проверка на существование
-      const existing = cartItems.find(el => el.title === title && el.image === image);
-      // Проверяем, есть ли уже такой товар в корзине
+      const image = item.querySelector('.order-item-img img')?.getAttribute('src');
+      // Получаем тип (S, M, L, XL)
+      const typeMatch = title.match(/Композиция\s([A-Z]+)/i);
+      const type = typeMatch ? typeMatch[1] : 'UNK';
+      // Получаем все карточки этого же типа
+      const allSameType = [...document.querySelectorAll('.order-item')]
+        .filter(el => el.querySelector('.order-item-title')?.textContent.includes(`Композиция ${type}`));
+      // Индекс карточки в группе (от 1 до N)
+      const index = allSameType.indexOf(item) + 1;
+      // Поиск существующего товара по типу и номеру
+      const existing = cartItems.find(el => el.title === title && el.index === index);
       if (existing) {
         existing.quantity += 1;
       } else {
-        cartItems.push({ title, desc, price, image, quantity: 1 });
+        cartItems.push({
+          title,
+          desc,
+          price,
+          image,
+          type,
+          index,
+          quantity: 1
+        });
       }
       updateCartCount();
       renderCartItems();
-      // Анимация полёта изображения в корзину
+      // ✨ Анимация полёта (оставляем как есть)
       const img = item.querySelector('.order-item-img');
       if (img) {
-        const clone = img.cloneNode(true); // Клонируем изображение
+        const clone = img.cloneNode(true);
         const rect = img.getBoundingClientRect();
         const cartIcon = document.querySelector('.cart-toggle');
-        clone.classList.add('fly-to-cart'); // Класс для анимации
-        document.body.appendChild(clone); // Вставляем на страницу
-        // Выставляем размеры и позицию клона
+        clone.classList.add('fly-to-cart');
+        document.body.appendChild(clone);
         clone.style.width = rect.width + 'px';
         clone.style.height = rect.height + 'px';
         clone.style.left = rect.left + 'px';
         clone.style.top = rect.top + 'px';
-        // Считаем расстояние до иконки корзины
         const cartRect = cartIcon.getBoundingClientRect();
         const cartCenterX = cartRect.left + cartRect.width / 2;
         const cartCenterY = cartRect.top + cartRect.height / 2;
@@ -785,11 +791,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const deltaX = cartCenterX - imgCenterX;
         const deltaY = cartCenterY - imgCenterY;
         requestAnimationFrame(() => {
-            clone.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.2) rotate(1turn)`;
-            clone.style.opacity = '0';
+          clone.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.2) rotate(1turn)`;
+          clone.style.opacity = '0';
         });
         setTimeout(() => {
-            clone.remove(); // Удаляем клон после анимации
+          clone.remove();
         }, 800);
       }
     });
@@ -912,8 +918,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Собираем текст
     const message = cartItems.map(item => {
-      const imageName = item.image?.split('/').pop().split('.')[0]; // например "S-1"
-      const titleWithId = `${item.title} [${imageName}]`;
+      const titleWithId = `${item.title} [${item.index}]`;
       return `• ${titleWithId} — ${item.quantity} шт. (${item.price * item.quantity} ₼)`;
     }).join('%0A');
     const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -951,7 +956,7 @@ document.addEventListener('DOMContentLoaded', () => {
           cartToggle.classList.remove('hidden-in-footer');
         }
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.1 });
     observer.observe(footer);
   }
 });

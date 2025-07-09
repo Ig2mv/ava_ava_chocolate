@@ -413,11 +413,11 @@
                 height: 100%;
                 object-fit: cover;
                 object-position: bottom;
-                filter: brightness(0.5);
+                filter: brightness(0.7);
                 transition: opacity 1.5s ease;
                 pointer-events: none;
                 &.visible {
-                    opacity: 1;
+                    opacity: 0.5;
                 }
             }
         }
@@ -609,22 +609,24 @@
                     white-space: nowrap;
                     padding: 0.75rem 0;
                     pointer-events: none;
+                    margin-top: clamp(0.5rem, -2.082rem + 14.7541vw, 5rem);
+                    @media ( min-width: 768px ) { display: none; }
                     .order-marquee-track {
                         display: inline-block;
                         white-space: nowrap;
-                        animation: scrollMarquee 150s linear infinite;
+                        animation: scrollMarquee 500s linear infinite;
                         will-change: transform;
                         span {
-                        @include h3;
-                        display: inline-block;
-                        font-size: clamp(1rem, 0.8rem + 1vw, 1.5rem);
-                        color: rgba(255, 255, 255, 0.7);
+                            @include h3;
+                            display: inline-block;
+                            font-size: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+                            color: rgba(255, 255, 255, 0.7);
                         }
                     }
-                }
-                @keyframes scrollMarquee {
-                0%   { transform: translateX(0); }
-                100% { transform: translateX(-50%); }
+                    @keyframes scrollMarquee {
+                    0%   { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                    }
                 }
             }
         }
@@ -636,13 +638,17 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         scroll-snap-align: start;
+        @media (max-width: 768px) { height: 150dvh; }
         .about-content {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5rem;
             gap: 0.5rem;
             padding: 0.5rem clamp(0.5rem, -0.2683rem + 4.3902vw, 5rem);
-            @media (max-width: 768px) { flex-direction: column; gap: 1rem; }
+            @media (max-width: 768px) { flex-direction: column; gap: 3rem; }
             .about-text {
                 flex: 1;
                 display: flex;
@@ -674,7 +680,7 @@
                         position: absolute;
                         left: 0;
                         bottom: 110%;
-                        width: 70%;
+                        width: 50%;
                         height: 1px;
                         background: linear-gradient(90deg, #e4d5bd 0%, rgba(255, 255, 255, 0.3) 15%, transparent 100%); 
                     }
@@ -708,26 +714,20 @@
                     }
                 }
             }
-            .about-model-wrapper {
-                position: relative;
-                width: 50%;
-                overflow: hidden;
-                border-radius: 1.25rem;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-                model-viewer {
-                    width: 100%;
-                    height: 100%;
-                    background-color: transparent;
-                }
-                .model-caption {
-                    position: absolute;
-                    @include thin;
-                    bottom: 1rem;
-                    left: 1rem;
-                    padding: 0.5rem 1rem;
-                    background: rgba(0, 0, 0, 0.5);
-                    border-radius: 0.75rem;
-                    backdrop-filter: blur(3px);
+            .about-image {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                img {
+                    width: 60%;
+                    height: auto;
+                    object-fit: contain;
+                    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                    @media (max-width: 768px) { 
+                        width: 100%; 
+                    }
                 }
             }
         }
@@ -1056,7 +1056,8 @@
     }
     //* FooterSection
     .footer-section {
-        height: 100dvh;
+        min-height: 100dvh;
+        padding-top: 10vh;
         position: relative;
         scroll-snap-align: start;
         display: flex;
@@ -1171,6 +1172,28 @@
                                 background: #000;
                                 color: #fff;
                             }
+                        }
+                        .footer-submit-btn.hidden {
+                            display: none;
+                        }
+                        .footer-error-message,
+                        .footer-success-message {
+                            margin-top: 10px;
+                            font-size: 14px;
+                            transition: opacity 0.3s ease;
+                            opacity: 0;
+                            pointer-events: none;
+                        }
+                        .footer-error-message.visible,
+                        .footer-success-message.visible {
+                            opacity: 1;
+                            pointer-events: auto;
+                        }
+                        .footer-error-message {
+                            color: #a00;
+                        }
+                        .footer-success-message {
+                            color: #0a0;
                         }
                     }
                 }
@@ -1503,65 +1526,72 @@
     &.animate {
         animation: fadeUp 1.5s ease forwards;
         // Header, Hero секция и иконки
-        &.staggered-1 { animation-delay: 5.0s; }
-        &.staggered-2 { animation-delay: 5.3s; }
-        &.staggered-3 { animation-delay: 5.6s; }
-        &.staggered-4 { animation-delay: 5.9s; }
-        &.staggered-5 { animation-delay: 6.2s; }
-        &.staggered-6 { animation-delay: 6.5s; }
-        &.staggered-7 { animation-delay: 6.8s; }
-        &.staggered-8 { animation-delay: 7.1s; }
+        &.staggered-1  { animation-delay: 5.0s; }
+        &.staggered-2  { animation-delay: 5.3s; }
+        &.staggered-3  { animation-delay: 5.6s; }
+        &.staggered-4  { animation-delay: 5.9s; }
+        &.staggered-5  { animation-delay: 6.2s; }
+        &.staggered-6  { animation-delay: 6.5s; }
+        &.staggered-7  { animation-delay: 6.8s; }
+        &.staggered-8  { animation-delay: 7.1s; }
+        // &.staggered-9  { animation-delay: 7.4s; }
+        // &.staggered-10 { animation-delay: 7.7s; }
+        // &.staggered-11 { animation-delay: 8.0s; }
+        // &.staggered-12 { animation-delay: 8.3s; }
+        // &.staggered-13 { animation-delay: 8.6s; }
+        // &.staggered-14 { animation-delay: 8.9s; }
+        // &.staggered-15 { animation-delay: 9.2s; }
+
         // Order секция
-        &.staggered-9  { animation-delay: 0.3s; }
-        &.staggered-10 { animation-delay: 0.6s; }
-        &.staggered-11 { animation-delay: 0.9s; }
-        &.staggered-12 { animation-delay: 1.2s; }
-        &.staggered-13 { animation-delay: 1.5s; }
-        &.staggered-14 { animation-delay: 1.8s; }
-        &.staggered-15 { animation-delay: 2.1s; }
-        &.staggered-16 { animation-delay: 2.4s; }
-        &.staggered-17 { animation-delay: 2.7s; }
-        &.staggered-18 { animation-delay: 3.0s; }
-        &.staggered-19 { animation-delay: 3.3s; }
-        &.staggered-20 { animation-delay: 3.6s; }
-        &.staggered-21 { animation-delay: 3.9s; }
-        &.staggered-22 { animation-delay: 4.2s; }
-        &.staggered-23 { animation-delay: 4.5s; }
-        &.staggered-24 { animation-delay: 4.8s; }
-        &.staggered-25 { animation-delay: 5.1s; }
-        &.staggered-26 { animation-delay: 5.4s; }
-        &.staggered-27 { animation-delay: 5.7s; }
-        &.staggered-28 { animation-delay: 6.0s; }
-        &.staggered-29 { animation-delay: 6.3s; }
-        &.staggered-30 { animation-delay: 6.6s; }
-        &.staggered-31 { animation-delay: 6.9s; }
-        &.staggered-32 { animation-delay: 7.2s; }
-        &.staggered-33 { animation-delay: 7.5s; }
-        &.staggered-34 { animation-delay: 7.8s; }
-        &.staggered-35 { animation-delay: 8.1s; }
-        &.staggered-36 { animation-delay: 8.4s; }
-        &.staggered-37 { animation-delay: 8.7s; }
-        &.staggered-38 { animation-delay: 9.0s; }
-        &.staggered-39 { animation-delay: 9.3s; }
-        &.staggered-40 { animation-delay: 9.6s; }
-        &.staggered-41 { animation-delay: 9.9s; }
-        &.staggered-42 { animation-delay: 10.2s; }
+        &.staggered-16 { animation-delay: 0.3s; }
+        &.staggered-17 { animation-delay: 0.6s; }
+        &.staggered-18 { animation-delay: 0.9s; }
+        &.staggered-19 { animation-delay: 1.2s; }
+        // &.staggered-20 { animation-delay: 1.5s; }
+        // &.staggered-21 { animation-delay: 1.8s; }
+        // &.staggered-22 { animation-delay: 2.1s; }
+        // &.staggered-23 { animation-delay: 2.4s; }
+        // &.staggered-24 { animation-delay: 2.7s; }
+        // &.staggered-25 { animation-delay: 3.0s; }
+        // &.staggered-26 { animation-delay: 3.3s; }
+        // &.staggered-27 { animation-delay: 3.6s; }
+        // &.staggered-28 { animation-delay: 3.9s; }
+        // &.staggered-29 { animation-delay: 4.2s; }
+        // &.staggered-30 { animation-delay: 4.5s; }
+
         // About секция
-        &.staggered-43 { animation-delay: 0.3s; }
-        &.staggered-44 { animation-delay: 0.6s; }
-        &.staggered-45 { animation-delay: 0.9s; }
-        &.staggered-46 { animation-delay: 1.2s; }
-        &.staggered-47 { animation-delay: 1.5s; }
-        &.staggered-48 { animation-delay: 1.8s; }
-        &.staggered-49 { animation-delay: 2.1s; }
+        &.staggered-31 { animation-delay: 0.3s; }
+        &.staggered-32 { animation-delay: 0.6s; }
+        &.staggered-33 { animation-delay: 0.9s; }
+        &.staggered-34 { animation-delay: 1.2s; }
+        &.staggered-35 { animation-delay: 1.5s; }
+        &.staggered-36 { animation-delay: 1.8s; }
+        &.staggered-37 { animation-delay: 2.1s; }
+        // &.staggered-38 { animation-delay: 2.4s; }
+        // &.staggered-39 { animation-delay: 2.7s; }
+        // &.staggered-40 { animation-delay: 3.0s; }
+        // &.staggered-41 { animation-delay: 3.3s; }
+        // &.staggered-42 { animation-delay: 3.6s; }
+        // &.staggered-43 { animation-delay: 3.9s; }
+        // &.staggered-44 { animation-delay: 4.2s; }
+        // &.staggered-45 { animation-delay: 4.5s; }
+
         // Reviews секция
-        &.staggered-50 { animation-delay: 0.3s; }
-        &.staggered-51 { animation-delay: 0.6s; }
-        &.staggered-52 { animation-delay: 0.9s; }
-        &.staggered-53 { animation-delay: 1.2s; }
-        &.staggered-54 { animation-delay: 1.5s; }
-        &.staggered-55 { animation-delay: 1.8s; }
-        &.staggered-56 { animation-delay: 2.1s; }
+        &.staggered-46 { animation-delay: 0.3s; }
+        &.staggered-47 { animation-delay: 0.6s; }
+        &.staggered-48 { animation-delay: 0.9s; }
+        &.staggered-49 { animation-delay: 1.2s; }
+        &.staggered-50 { animation-delay: 1.5s; }
+        &.staggered-51 { animation-delay: 1.8s; }
+        &.staggered-52 { animation-delay: 2.1s; }
+        // &.staggered-53 { animation-delay: 2.4s; }
+        // &.staggered-54 { animation-delay: 2.7s; }
+        // &.staggered-55 { animation-delay: 3.0s; }
+        // &.staggered-56 { animation-delay: 3.3s; }
+        // &.staggered-57 { animation-delay: 3.6s; }
+        // &.staggered-58 { animation-delay: 3.9s; }
+        // &.staggered-59 { animation-delay: 4.2s; }
+        // &.staggered-60 { animation-delay: 4.5s; }
     }
     @keyframes fadeUp {
         to {
@@ -1664,5 +1694,4 @@
     visibility: hidden;
     pointer-events: none;
     transform: scale(0.8);
-    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
 }

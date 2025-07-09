@@ -573,12 +573,12 @@ body.fonts-loading {
   height: 100%;
   object-fit: cover;
   object-position: bottom;
-  filter: brightness(0.5);
+  filter: brightness(0.7);
   transition: opacity 1.5s ease;
   pointer-events: none;
 }
 .main .hero-section .hero-video-wrapper .hero-video.visible {
-  opacity: 1;
+  opacity: 0.5;
 }
 .main .hero-section .hero-content {
   z-index: 1;
@@ -842,11 +842,17 @@ body.fonts-loading {
   white-space: nowrap;
   padding: 0.75rem 0;
   pointer-events: none;
+  margin-top: clamp(0.5rem, -2.082rem + 14.7541vw, 5rem);
+}
+@media (min-width: 768px) {
+  .main .order-section .order-content .order-scroll-wrapper .order-marquee {
+    display: none;
+  }
 }
 .main .order-section .order-content .order-scroll-wrapper .order-marquee .order-marquee-track {
   display: inline-block;
   white-space: nowrap;
-  animation: scrollMarquee 150s linear infinite;
+  animation: scrollMarquee 500s linear infinite;
   will-change: transform;
 }
 .main .order-section .order-content .order-scroll-wrapper .order-marquee .order-marquee-track span {
@@ -873,18 +879,26 @@ body.fonts-loading {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   scroll-snap-align: start;
+}
+@media (max-width: 768px) {
+  .main .about-section {
+    height: 150dvh;
+  }
 }
 .main .about-section .about-content {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5rem;
   gap: 0.5rem;
   padding: 0.5rem clamp(0.5rem, -0.2683rem + 4.3902vw, 5rem);
 }
 @media (max-width: 768px) {
   .main .about-section .about-content {
     flex-direction: column;
-    gap: 1rem;
+    gap: 3rem;
   }
 }
 .main .about-section .about-content .about-text {
@@ -980,7 +994,7 @@ body.fonts-loading {
   position: absolute;
   left: 0;
   bottom: 110%;
-  width: 70%;
+  width: 50%;
   height: 1px;
   background: linear-gradient(90deg, #e4d5bd 0%, rgba(255, 255, 255, 0.3) 15%, transparent 100%);
 }
@@ -1072,31 +1086,23 @@ body.fonts-loading {
     line-height: 1.4;
   }
 }
-.main .about-section .about-content .about-model-wrapper {
-  position: relative;
-  width: 50%;
-  overflow: hidden;
-  border-radius: 1.25rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+.main .about-section .about-content .about-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.main .about-section .about-content .about-model-wrapper model-viewer {
-  width: 100%;
-  height: 100%;
-  background-color: transparent;
+.main .about-section .about-content .about-image img {
+  width: 60%;
+  height: auto;
+  object-fit: contain;
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
-.main .about-section .about-content .about-model-wrapper .model-caption {
-  position: absolute;
-  font-size: clamp(1rem, 1rem + (1.5 - 1) * (100vw - 280px) / (1920 - 280), 1.5rem);
-  font-family: "NeueHelvetica", sans-serif;
-  font-weight: 200;
-  letter-spacing: 0.015em;
-  line-height: 1.4;
-  bottom: 1rem;
-  left: 1rem;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 0.75rem;
-  backdrop-filter: blur(3px);
+@media (max-width: 768px) {
+  .main .about-section .about-content .about-image img {
+    width: 100%;
+  }
 }
 .main .reviews-section {
   position: relative;
@@ -1528,7 +1534,8 @@ body.fonts-loading {
   pointer-events: auto;
 }
 .main .footer-section {
-  height: 100dvh;
+  min-height: 100dvh;
+  padding-top: 10vh;
   position: relative;
   scroll-snap-align: start;
   display: flex;
@@ -1651,6 +1658,28 @@ body.fonts-loading {
 .main .footer-section .footer-ava .footer-right .footer-form .footer-form-bottom button:hover {
   background: #000;
   color: #fff;
+}
+.main .footer-section .footer-ava .footer-right .footer-form .footer-form-bottom .footer-submit-btn.hidden {
+  display: none;
+}
+.main .footer-section .footer-ava .footer-right .footer-form .footer-form-bottom .footer-error-message,
+.main .footer-section .footer-ava .footer-right .footer-form .footer-form-bottom .footer-success-message {
+  margin-top: 10px;
+  font-size: 14px;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.main .footer-section .footer-ava .footer-right .footer-form .footer-form-bottom .footer-error-message.visible,
+.main .footer-section .footer-ava .footer-right .footer-form .footer-form-bottom .footer-success-message.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.main .footer-section .footer-ava .footer-right .footer-form .footer-form-bottom .footer-error-message {
+  color: #a00;
+}
+.main .footer-section .footer-ava .footer-right .footer-form .footer-form-bottom .footer-success-message {
+  color: #0a0;
 }
 .main .footer-section .input-wrapper {
   position: relative;
@@ -2061,148 +2090,58 @@ body.fonts-loading {
 .staggered.animate.staggered-8 {
   animation-delay: 7.1s;
 }
-.staggered.animate.staggered-9 {
-  animation-delay: 0.3s;
-}
-.staggered.animate.staggered-10 {
-  animation-delay: 0.6s;
-}
-.staggered.animate.staggered-11 {
-  animation-delay: 0.9s;
-}
-.staggered.animate.staggered-12 {
-  animation-delay: 1.2s;
-}
-.staggered.animate.staggered-13 {
-  animation-delay: 1.5s;
-}
-.staggered.animate.staggered-14 {
-  animation-delay: 1.8s;
-}
-.staggered.animate.staggered-15 {
-  animation-delay: 2.1s;
-}
 .staggered.animate.staggered-16 {
-  animation-delay: 2.4s;
+  animation-delay: 0.3s;
 }
 .staggered.animate.staggered-17 {
-  animation-delay: 2.7s;
+  animation-delay: 0.6s;
 }
 .staggered.animate.staggered-18 {
-  animation-delay: 3s;
+  animation-delay: 0.9s;
 }
 .staggered.animate.staggered-19 {
-  animation-delay: 3.3s;
-}
-.staggered.animate.staggered-20 {
-  animation-delay: 3.6s;
-}
-.staggered.animate.staggered-21 {
-  animation-delay: 3.9s;
-}
-.staggered.animate.staggered-22 {
-  animation-delay: 4.2s;
-}
-.staggered.animate.staggered-23 {
-  animation-delay: 4.5s;
-}
-.staggered.animate.staggered-24 {
-  animation-delay: 4.8s;
-}
-.staggered.animate.staggered-25 {
-  animation-delay: 5.1s;
-}
-.staggered.animate.staggered-26 {
-  animation-delay: 5.4s;
-}
-.staggered.animate.staggered-27 {
-  animation-delay: 5.7s;
-}
-.staggered.animate.staggered-28 {
-  animation-delay: 6s;
-}
-.staggered.animate.staggered-29 {
-  animation-delay: 6.3s;
-}
-.staggered.animate.staggered-30 {
-  animation-delay: 6.6s;
+  animation-delay: 1.2s;
 }
 .staggered.animate.staggered-31 {
-  animation-delay: 6.9s;
+  animation-delay: 0.3s;
 }
 .staggered.animate.staggered-32 {
-  animation-delay: 7.2s;
+  animation-delay: 0.6s;
 }
 .staggered.animate.staggered-33 {
-  animation-delay: 7.5s;
+  animation-delay: 0.9s;
 }
 .staggered.animate.staggered-34 {
-  animation-delay: 7.8s;
+  animation-delay: 1.2s;
 }
 .staggered.animate.staggered-35 {
-  animation-delay: 8.1s;
+  animation-delay: 1.5s;
 }
 .staggered.animate.staggered-36 {
-  animation-delay: 8.4s;
+  animation-delay: 1.8s;
 }
 .staggered.animate.staggered-37 {
-  animation-delay: 8.7s;
-}
-.staggered.animate.staggered-38 {
-  animation-delay: 9s;
-}
-.staggered.animate.staggered-39 {
-  animation-delay: 9.3s;
-}
-.staggered.animate.staggered-40 {
-  animation-delay: 9.6s;
-}
-.staggered.animate.staggered-41 {
-  animation-delay: 9.9s;
-}
-.staggered.animate.staggered-42 {
-  animation-delay: 10.2s;
-}
-.staggered.animate.staggered-43 {
-  animation-delay: 0.3s;
-}
-.staggered.animate.staggered-44 {
-  animation-delay: 0.6s;
-}
-.staggered.animate.staggered-45 {
-  animation-delay: 0.9s;
-}
-.staggered.animate.staggered-46 {
-  animation-delay: 1.2s;
-}
-.staggered.animate.staggered-47 {
-  animation-delay: 1.5s;
-}
-.staggered.animate.staggered-48 {
-  animation-delay: 1.8s;
-}
-.staggered.animate.staggered-49 {
   animation-delay: 2.1s;
 }
-.staggered.animate.staggered-50 {
+.staggered.animate.staggered-46 {
   animation-delay: 0.3s;
 }
-.staggered.animate.staggered-51 {
+.staggered.animate.staggered-47 {
   animation-delay: 0.6s;
 }
-.staggered.animate.staggered-52 {
+.staggered.animate.staggered-48 {
   animation-delay: 0.9s;
 }
-.staggered.animate.staggered-53 {
+.staggered.animate.staggered-49 {
   animation-delay: 1.2s;
 }
-.staggered.animate.staggered-54 {
+.staggered.animate.staggered-50 {
   animation-delay: 1.5s;
 }
-.staggered.animate.staggered-55 {
+.staggered.animate.staggered-51 {
   animation-delay: 1.8s;
 }
-.staggered.animate.staggered-56 {
+.staggered.animate.staggered-52 {
   animation-delay: 2.1s;
 }
 @keyframes fadeUp {
@@ -2305,7 +2244,6 @@ body.fonts-loading {
   visibility: hidden;
   pointer-events: none;
   transform: scale(0.8);
-  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
 }
 
 /*# sourceMappingURL=style.css.map */
