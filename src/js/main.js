@@ -197,19 +197,51 @@ document.addEventListener('DOMContentLoaded', () => {
 //! HeroVideo
 document.addEventListener('DOMContentLoaded', () => {
   const heroVideo = document.querySelector('.hero-video');
-  if (heroVideo) {
+  const heroSection = document.getElementById('hero');
+  if (heroVideo && heroSection) {
+    const source = heroVideo.querySelector('source');
+    // Определяем: мобилка или десктоп
+    const isMobile = window.innerWidth <= 768;
+    // Подставляем нужный src
+    const mobileSrc = 'src/video/ava-hero-mobile.mp4';
+    const desktopSrc = 'src/video/ava-hero.mp4';
+    source.src = isMobile ? mobileSrc : desktopSrc;
+    // Обновляем video
+    heroVideo.load();
+    let hasPlayed = false;
+    // Остановка на последнем кадре
+    heroVideo.addEventListener('ended', () => {
+      heroVideo.pause();
+      heroVideo.currentTime = heroVideo.duration;
+      hasPlayed = true;
+    });
+    // Перезапуск при повторном попадании hero в зону видимости
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && hasPlayed) {
+            heroVideo.currentTime = 0;
+            heroVideo.play().catch(() => {});
+            hasPlayed = false;
+          }
+        });
+      },
+      {
+        threshold: 0.6
+      }
+    );
+    observer.observe(heroSection);
     // Автовоспроизведение при возврате на вкладку
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === 'visible' && !heroVideo.paused && !heroVideo.ended) {
         heroVideo.play().catch(() => {});
       }
     });
-    // Проверка зависания видео (например, после сворачивания окна)
+    // Проверка зависания видео (например, при сворачивании окна)
     let lastTime = 0;
     function checkVideoStuck() {
       if (!heroVideo.paused && !heroVideo.ended) {
         const currentTime = heroVideo.currentTime;
-        // Если видео застывает (время не движется)
         if (Math.abs(currentTime - lastTime) < 0.01) {
           heroVideo.play().catch(() => {});
         }
@@ -220,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(checkVideoStuck);
   }
 });
+
 
 //! AudioBackground
 document.addEventListener('DOMContentLoaded', () => {
@@ -544,7 +577,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //! FooterFormValidation
-//! FooterFormValidation (переработано)
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('.footer-form');
   const nameInput = form.querySelector('.name-wrapper input');
